@@ -9,7 +9,20 @@
 
 .gift-guide-grid__title {
   font-size: 2rem;
-  text-align: center;
+  text-al    handleProductClick(e) {
+      // Don't open popup if clicking the quick-add button
+      if (e.target.closest('.gift-guide-product__quick-add')) {
+        return;
+      }
+      
+      const productId = e.currentTarget.dataset.productId;
+      const response = await fetch(`/products/${productId}.js`);
+      const product = await response.json();
+      
+      this.currentProduct = product;
+      this.renderPopup(product);
+      this.openPopup();
+    }er;
   margin-bottom: 3rem;
 }
 
@@ -44,6 +57,13 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  z-index: 2;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.gift-guide-product__quick-add:hover {
+  background: #FFD700;
+  transform: scale(1.1);
 }
 
 .gift-guide-popup {
@@ -190,6 +210,7 @@
       this.popupContent = this.popup.querySelector('.gift-guide-popup__content');
       this.closeButton = this.popup.querySelector('.gift-guide-popup__close');
       this.addToCartButton = this.popup.querySelector('.gift-guide-popup__add-to-cart');
+      this.currentProduct = null;
       
       this.init();
     }
@@ -201,6 +222,15 @@
     bindEvents() {
       document.querySelectorAll('.gift-guide-product').forEach(product => {
         product.addEventListener('click', (e) => this.handleProductClick(e));
+        
+        // Add separate event listener for quick-add button
+        const quickAddBtn = product.querySelector('.gift-guide-product__quick-add');
+        if (quickAddBtn) {
+          quickAddBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent product click event
+            this.handleQuickAdd(e, product.dataset.productId);
+          });
+        }
       });
 
       this.closeButton.addEventListener('click', () => this.closePopup());
@@ -326,6 +356,26 @@
     closePopup() {
       this.popup.style.display = 'none';
       document.body.style.overflow = '';
+    }
+
+    async handleQuickAdd(e, productId) {
+      try {
+        const response = await fetch(`/products/${productId}.js`);
+        const product = await response.json();
+        
+        // If product has no variants, add directly to cart
+        if (product.variants.length === 1) {
+          await this.addItemToCart(product.variants[0].id, 1);
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+        } else {
+          // If product has variants, open popup for selection
+          this.currentProduct = product;
+          this.renderPopup(product);
+          this.openPopup();
+        }
+      } catch (error) {
+        console.error('Error in quick add:', error);
+      }
     }
   }
 

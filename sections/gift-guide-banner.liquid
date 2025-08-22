@@ -49,87 +49,226 @@
 {% endschema %}
 
 <style>
-.gift-guide-banner {
-  padding: 4rem 2rem;
-  text-align: center;
-  position: relative;
-  background-color: #fff;
-  overflow: hidden;
+.gift-guide-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  width: 1440px;
+  height: 878px;
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
 }
 
-.gift-guide-banner__background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.1;
-  z-index: 1;
-}
-
-.gift-guide-banner__content {
-  position: relative;
-  z-index: 2;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.gift-guide-banner__title {
-  font-size: 1.2rem;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-
-.gift-guide-banner__subtitle {
-  font-size: 1rem;
-  margin-bottom: 2rem;
-  color: #666;
-}
-
-.gift-guide-banner__heading {
-  font-size: 3.5rem;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-}
-
-.gift-guide-banner__description {
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto 2rem;
-  line-height: 1.6;
-}
-
-.gift-guide-banner__button {
-  display: inline-flex;
+.gift-guide-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #000;
-  color: #fff;
-  text-decoration: none;
+  padding: 10px 50px;
+  gap: 360px;
+  width: 1440px;
+  height: 64px;
+  background: #F5F5F5;
+  flex: none;
+  order: 0;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+.logo {
+  width: 151.44px;
+  height: 19px;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
+}
+
+.header-text {
+  width: 260px;
+  height: 14px;
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 13px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #000000;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+}
+
+.choose-gift-button {
+  width: 207px;
+  height: 44px;
+  position: relative;
+  flex: none;
+  order: 2;
+  flex-grow: 0;
+}
+
+.button-yellow {
+  box-sizing: border-box;
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  top: 0%;
+  bottom: 0%;
+  background: #FFF544;
+}
+
+.button-line {
+  position: absolute;
+  left: 77.78%;
+  right: 10.63%;
+  top: 48.99%;
+  bottom: 51.01%;
+  background: #000000;
+  border: 1.5px solid #000000;
+}
+
+.button-text {
+  position: absolute;
+  left: 19.81%;
+  right: 30.92%;
+  top: 26.51%;
+  bottom: 25.76%;
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  color: #000000;
+}
+
+.main-content {
+  width: 1440px;
+  height: 780px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  position: relative;
+  background: #FFFFFF;
+}
+
+.gift-guide-title {
+  position: absolute;
+  left: 4.65%;
+  right: 63.47%;
+  top: 55.69%;
+  bottom: 36.33%;
+  font-family: 'Jost';
+  font-style: normal;
   font-weight: 500;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
+  font-size: 70px;
+  line-height: 100%;
+  display: flex;
+  align-items: center;
+  color: #000000;
 }
 
-.gift-guide-banner__button svg {
-  margin-left: 0.5rem;
-  transition: transform 0.3s ease;
+.gift-guide-description {
+  position: absolute;
+  width: 483px;
+  height: 84px;
+  left: calc(50% - 483px/2 - 411.5px);
+  top: 609px;
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 140%;
+  display: flex;
+  align-items: center;
+  color: #000000;
 }
 
-.gift-guide-banner__button:hover {
-  background-color: #FFD700;
-  color: #000;
+.shop-now-button {
+  position: absolute;
+  width: 220px;
+  height: 50px;
+  left: 67px;
+  top: 743px;
+  background: #000000;
+  transition: background-color 0.3s ease;
 }
 
-.gift-guide-banner__button:hover svg {
-  transform: translateX(5px);
+.shop-now-button:hover {
+  background: #FFF544;
 }
 
-.gift-guide-banner__footer {
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  color: #666;
+.shop-now-button:hover .button-text {
+  color: #000000;
+}
+
+.shop-now-line {
+  position: absolute;
+  left: 77.78%;
+  right: 10.63%;
+  top: 48.99%;
+  bottom: 51.01%;
+  background: #FFFFFF;
+  border: 1.5px solid #FFFFFF;
+}
+
+.shop-now-text {
+  position: absolute;
+  left: 25.03%;
+  right: 35.42%;
+  top: 28.51%;
+  bottom: 29.49%;
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  color: #FFFFFF;
+}
+
+.footer-banner {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 50px;
+  gap: 375px;
+  width: 1440px;
+  height: 34px;
+  background: #F5F5F5;
+  flex: none;
+  order: 2;
+  align-self: stretch;
+  flex-grow: 0;
+}
+
+.footer-text {
+  width: 451px;
+  height: 14px;
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 13px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #000000;
+  flex: none;
+  order: 0;
+  flex-grow: 0;
 }
 
 @media screen and (max-width: 768px) {
