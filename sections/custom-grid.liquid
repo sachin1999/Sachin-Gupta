@@ -28,14 +28,15 @@
   
   <div class="product-grid__container">
     {% for product in section.settings.product_list %}
-      <div class="product-card" data-product-id="{{ product.id }}">
+      <div class="product-card" data-product-id="{{ product.id }}" data-product-title="{{ product.title }}">
         <div class="product-card__image-container">
           <img 
-            src="{{ product.featured_image | img_url: 'medium' }}"
+            src="{{ product.featured_media | img_url: '800x' }}"
             alt="{{ product.title }}"
             class="product-card__image"
+            loading="lazy"
           >
-          <button class="product-card__popup-trigger">+</button>
+          <button class="product-card__popup-trigger" aria-label="Quick view">+</button>
         </div>
       </div>
     {% endfor %}
@@ -233,10 +234,17 @@
       trigger.addEventListener('click', function() {
         const productCard = this.closest('.product-card');
         const productId = productCard.dataset.productId;
+        const productImage = productCard.querySelector('.product-card__image').src;
+        const productTitle = productCard.querySelector('.product-card__image').alt;
         
         // Create popup
         const popup = popupTemplate.content.cloneNode(true).children[0];
         document.body.appendChild(popup);
+        
+        // Set popup content
+        popup.querySelector('.product-popup__image').src = productImage;
+        popup.querySelector('.product-popup__image').alt = productTitle;
+        popup.querySelector('.product-popup__title').textContent = productTitle;
         
         // Close popup
         const closeBtn = popup.querySelector('.product-popup__close');

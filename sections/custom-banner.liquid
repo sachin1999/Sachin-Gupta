@@ -43,12 +43,12 @@
     <p class="banner__subheading">{{ section.settings.subheading }}</p>
     
     <div class="banner__buttons">
-      <button class="button button--primary">
+      <a href="/collections/all" class="button button--primary">
         SHOP NOW <span class="arrow">→</span>
-      </button>
-      <button class="button button--secondary">
+      </a>
+      <a href="/collections/all" class="button button--secondary">
         SHOP NOW <span class="arrow">→</span>
-      </button>
+      </a>
     </div>
 
     <div class="banner__illustration">
@@ -110,11 +110,10 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: transform 0.3s ease;
-}
-
-.button:hover {
-  transform: translateY(-2px);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
 }
 
 .button--primary {
@@ -122,9 +121,28 @@
   color: #fff;
 }
 
+.button--primary:hover {
+  background-color: #ffeb3b;
+  color: #000;
+}
+
 .button--secondary {
   background-color: #ffeb3b;
   color: #000;
+}
+
+.button--secondary:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.button .arrow {
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+.button:hover .arrow {
+  transform: translateX(5px);
 }
 
 .banner__tagline {
