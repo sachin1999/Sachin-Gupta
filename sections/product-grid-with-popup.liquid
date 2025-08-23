@@ -1,0 +1,303 @@
+{% schema %}
+{
+  "name": "Product Grid with Popup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "Tisso vison in the wild"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Grid with Popup"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+.product-grid {
+  padding: 60px 0;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.product-grid__title {
+  font-family: 'Jost';
+  font-size: 36px;
+  margin-bottom: 40px;
+  padding: 0 20px;
+}
+
+.product-grid__items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding: 0 20px;
+}
+
+.product-item {
+  position: relative;
+}
+
+.product-item__image {
+  width: 100%;
+  height: 444px;
+  object-fit: cover;
+}
+
+.quick-view-button {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: rgba(248, 248, 248, 0.9);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+.quick-view-button::before,
+.quick-view-button::after {
+  content: '';
+  position: absolute;
+  background: #000;
+  border-radius: 1px;
+}
+
+.quick-view-button::before {
+  width: 10px;
+  height: 2px;
+}
+
+.quick-view-button::after {
+  width: 2px;
+  height: 10px;
+}
+
+/* Popup Styles */
+.product-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.product-popup.active {
+  display: flex;
+}
+
+.product-popup__content {
+  background: #fff;
+  padding: 40px;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+}
+
+.product-popup__close {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.product-popup__title {
+  font-family: 'Jost';
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.product-popup__price {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.product-popup__description {
+  margin-bottom: 30px;
+}
+
+.product-popup__variant-selectors {
+  margin-bottom: 30px;
+}
+
+.variant-selector {
+  margin-bottom: 20px;
+}
+
+.variant-selector__label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.variant-selector__options {
+  display: flex;
+  gap: 10px;
+}
+
+.variant-option {
+  padding: 10px 20px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.variant-option.selected {
+  background: #000;
+  color: #fff;
+}
+
+.product-popup__add-to-cart {
+  width: 100%;
+  padding: 15px;
+  background: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: 'Jost';
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.product-popup__add-to-cart::after {
+  content: "→";
+}
+</style>
+
+<div class="product-grid">
+  <h2 class="product-grid__title">{{ section.settings.title }}</h2>
+  
+  <div class="product-grid__items">
+    {% for product in section.settings.collection.products limit: 6 %}
+      <div class="product-item" data-product-id="{{ product.id }}">
+        <img 
+          src="{{ product.featured_image | img_url: '433x444', crop: 'center' }}"
+          alt="{{ product.title }}"
+          class="product-item__image"
+          loading="lazy"
+        >
+        <button class="quick-view-button" aria-label="Quick view {{ product.title }}"></button>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="product-popup" id="productPopup">
+  <div class="product-popup__content">
+    <button class="product-popup__close">×</button>
+    <h3 class="product-popup__title"></h3>
+    <div class="product-popup__price"></div>
+    <div class="product-popup__description"></div>
+    <div class="product-popup__variant-selectors">
+      <div class="variant-selector" id="colorSelector">
+        <label class="variant-selector__label">Color</label>
+        <div class="variant-selector__options"></div>
+      </div>
+      <div class="variant-selector" id="sizeSelector">
+        <label class="variant-selector__label">Size</label>
+        <div class="variant-selector__options"></div>
+      </div>
+    </div>
+    <button class="product-popup__add-to-cart">ADD TO CART</button>
+  </div>
+</div>
+
+{% javascript %}
+document.addEventListener('DOMContentLoaded', function() {
+  const popup = document.getElementById('productPopup');
+  const quickViewButtons = document.querySelectorAll('.quick-view-button');
+  const closeButton = popup.querySelector('.product-popup__close');
+  
+  quickViewButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const productItem = this.closest('.product-item');
+      const productId = productItem.dataset.productId;
+      
+      // Fetch product data
+      fetch(`/products/${productId}.js`)
+        .then(response => response.json())
+        .then(product => {
+          // Populate popup
+          popup.querySelector('.product-popup__title').textContent = product.title;
+          popup.querySelector('.product-popup__price').textContent = `${product.price_min}€`;
+          popup.querySelector('.product-popup__description').textContent = product.description;
+          
+          // Show popup
+          popup.classList.add('active');
+          
+          // Setup variant selectors
+          setupVariantSelectors(product);
+        });
+    });
+  });
+  
+  closeButton.addEventListener('click', function() {
+    popup.classList.remove('active');
+  });
+  
+  function setupVariantSelectors(product) {
+    const colorOptions = new Set();
+    const sizeOptions = new Set();
+    
+    product.variants.forEach(variant => {
+      if (variant.option1) colorOptions.add(variant.option1);
+      if (variant.option2) sizeOptions.add(variant.option2);
+    });
+    
+    // Setup color options
+    const colorSelector = document.querySelector('#colorSelector .variant-selector__options');
+    colorSelector.innerHTML = '';
+    colorOptions.forEach(color => {
+      const option = document.createElement('div');
+      option.className = 'variant-option';
+      option.textContent = color;
+      colorSelector.appendChild(option);
+    });
+    
+    // Setup size options
+    const sizeSelector = document.querySelector('#sizeSelector .variant-selector__options');
+    sizeSelector.innerHTML = '';
+    sizeOptions.forEach(size => {
+      const option = document.createElement('div');
+      option.className = 'variant-option';
+      option.textContent = size;
+      sizeSelector.appendChild(option);
+    });
+    
+    // Setup option selection
+    const variantOptions = document.querySelectorAll('.variant-option');
+    variantOptions.forEach(option => {
+      option.addEventListener('click', function() {
+        const siblings = this.parentElement.children;
+        Array.from(siblings).forEach(sib => sib.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+  }
+});
+{% endjavascript %}
