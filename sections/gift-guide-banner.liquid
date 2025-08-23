@@ -200,16 +200,19 @@
   height: 50px;
   left: 67px;
   top: 743px;
-  background: #000000;
+  background: #FFF544;
   transition: background-color 0.3s ease;
+  color: #000;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
 }
 
 .shop-now-button:hover {
-  background: #FFF544;
+  background: #000;
 }
 
 .shop-now-button:hover .shop-now-button__text {
-  color: #000000;
+  color: #FFF544;
 }
 
 .shop-now-button__line {
@@ -292,6 +295,112 @@
   display: block;
 }
 
+.shop-now-button {
+  position: absolute;
+  width: 220px;
+  height: 50px;
+  left: 67px;
+  top: 743px;
+  background: #FFF544;
+  transition: background-color 0.3s ease;
+  color: #000;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+}
+
+.choose-gift-btn {
+  background: #FFF544;
+  color: #000;
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.choose-gift-btn:hover {
+  background: #000;
+  color: #FFF544;
+}
+
+.banner-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 0 0 0;
+}
+
+.banner-logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-left: 32px;
+}
+
+.banner-header-text {
+  font-size: 1rem;
+  color: #333;
+  margin: 0 16px;
+}
+
+.banner-image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.gift-guide-title {
+  font-size: 3rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.gift-guide-description {
+  font-size: 1.25rem;
+  text-align: center;
+  margin-bottom: 32px;
+  max-width: 600px;
+}
+
+.shop-now-button {
+  padding: 16px 32px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  transition: background 0.3s, color 0.3s;
+  cursor: pointer;
+  margin-bottom: 32px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+}
+
+.footer-banner {
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+  padding: 16px 0;
+  background: #fff544;
+  color: #000;
+  font-size: 1rem;
+}
+
+.banner-svg {
+  max-width: 500px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
 @media screen and (max-width: 768px) {
   .gift-guide-banner {
     padding: 2rem 0.5rem;
@@ -307,17 +416,40 @@
   .banner-image {
     margin-bottom: 16px;
   }
+
+  .gift-guide-title {
+    font-size: 2rem;
+  }
+
+  .gift-guide-description {
+    font-size: 1rem;
+    max-width: 90vw;
+  }
+
+  .shop-now-button {
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
 }
 </style>
 
 <div class="gift-guide-banner" style="background:#F5F5F5;min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
+  <div class="banner-header" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:24px 0 0 0;">
+    <div class="banner-logo" style="font-size:1.5rem;font-weight:600;margin-left:32px;">{{ section.settings.title }}</div>
+    <div class="banner-header-text" style="font-size:1rem;color:#333;margin:0 16px;">{{ section.settings.header_text }}</div>
+    <button class="choose-gift-btn" style="background:#FFF544;color:#000;font-family:'Jost',sans-serif;font-size:1rem;padding:12px 32px;border:none;border-radius:4px;font-weight:500;cursor:pointer;margin-right:32px;display:flex;align-items:center;gap:8px;">
+      CHOOSE GIFT
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
   <div class="banner-image" style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:32px;">
     {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Banner Illustration', 'banner-svg' }}
   </div>
   <h1 class="gift-guide-title" style="font-size:3rem;font-weight:600;text-align:center;margin-bottom:16px;">{{ section.settings.heading }}</h1>
   <div class="gift-guide-description" style="font-size:1.25rem;text-align:center;margin-bottom:32px;max-width:600px;">{{ section.settings.description }}</div>
-  <button class="shop-now-button" style="background:#000;color:#fff;padding:16px 32px;font-size:1rem;border:none;border-radius:4px;transition:background 0.3s;color 0.3s;cursor:pointer;margin-bottom:32px;">
+  <button class="shop-now-button" style="background:#FFF544;color:#000;padding:16px 32px;font-size:1rem;border:none;border-radius:4px;transition:background 0.3s;color 0.3s;cursor:pointer;margin-bottom:32px;font-family:'Jost',sans-serif;font-weight:500;">
     <span class="shop-now-button__text">{{ section.settings.button_text }}</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </button>
   <div class="footer-banner" style="width:100%;text-align:center;margin-top:auto;padding:16px 0;background:#fff544;color:#000;font-size:1rem;">
     {{ section.settings.footer_text }}
