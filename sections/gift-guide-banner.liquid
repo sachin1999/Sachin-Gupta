@@ -58,11 +58,12 @@
 .gift-guide-header {
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 10px 50px;
-  gap: 360px;
-  width: 1440px;
+  gap: 24px;
+  width: 100%;
+  max-width: 1440px;
   height: 64px;
   background: #F5F5F5;
   flex: none;
@@ -205,7 +206,7 @@
   background: #FFF544;
 }
 
-.shop-now-button:hover .button-text {
+.shop-now-button:hover .shop-now-button__text {
   color: #000000;
 }
 
@@ -283,23 +284,26 @@
 }
 
 .banner-svg {
-  width: 100vw;
-  height: 780px;
+  max-width: 100%;
+  height: auto;
   object-fit: contain;
   display: block;
 }
 
 @media screen and (max-width: 768px) {
   .gift-guide-banner {
-    padding: 3rem 1rem;
+    padding: 2rem 0.5rem;
   }
 
-  .gift-guide-banner__heading {
-    font-size: 2.5rem;
+  .gift-guide-header {
+    flex-direction: column;
+    gap: 12px;
+    height: auto;
+    padding: 10px 10px;
   }
 
-  .gift-guide-banner__description {
-    font-size: 1rem;
+  .banner-image {
+    margin-bottom: 16px;
   }
 }
 </style>
@@ -308,7 +312,7 @@
   <div class="banner-svg-bg">
     {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Gift Guide Illustration', 'banner-svg' }}
   </div>
-  <div class="banner-image">
+  <div class="banner-image" style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:32px;">
     {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Banner Illustration', 'banner-svg' }}
   </div>
   <div class="gift-guide-header">
