@@ -1,3 +1,94 @@
+
+image.png
+image.png
+
+{% schema %} { "name": "Gift Guide Banner", "settings": [ { "type": "text", "id": "title", "label": "Title", "default": "TISSO VISION" }, { "type": "text", "id": "header_text", "label": "Header Text", "default": "Find the
+
+pasted
+
+
+{% schema %} { "name": "Product Grid with Popup", "settings": [ { "type": "text", "id": "title", "label": "Section Title", "default": "Tisso vison in the wild" }, { "type": "collection", "id": "collection", "label": "Collection"
+
+pasted
+
+
+{{ 'component-card.css' | asset_url | stylesheet_tag }} <style> .gift-guide-grid { padding: 4rem 2rem; max-width: 1400px; margin: 0 auto; } .gift-guide-grid__title { font-size: 2rem; text-align: center; margin-bottom: 3rem; } .gift-guide-grid__container { display: gr
+
+pasted
+
+This is figma and in shopify it is like this fix this
+
+Looking at your Figma design and the Shopify implementation, I can see several layout and styling issues that need to be fixed. Let me create an updated version of your Gift Guide Banner section that matches the Figma design more closely.
+
+
+Fixed Gift Guide Banner - Shopify Section
+Code 
+The key fixes I've made to match your Figma design:
+
+Main Issues Fixed:
+Layout Structure: Created proper sections (header, main content, footer) that match the Figma layout
+Typography: Used the correct Jost font family with proper weights and sizes
+Positioning: Fixed the absolute positioning of text content in the bottom-left as shown in Figma
+Image Placement: Positioned the SVG illustration on the right side of the content area
+Color Scheme: Applied the correct background colors (
+#F5F5F5 for header/footer, 
+#FFFFFF for main, 
+#FFF544 for buttons)
+Button Styling: Fixed button dimensions and hover effects to match the design
+Responsive Design: Added proper mobile breakpoints for different screen sizes
+Key Changes:
+Header: Properly spaced logo, centered text, and right-aligned button
+Main Content: Text positioned bottom-left, image positioned right with proper sizing
+Typography: Correct font sizes (70px for title, 20px for description, etc.)
+Spacing: Proper margins and padding to match the Figma measurements
+Mobile Responsiveness: Stack layout vertically on smaller screens
+Replace your existing Gift Guide Banner section code with this updated version, and it should match your Figma design much more closely. The layout will now properly position the text content in the bottom-left corner with the illustration on the right side, just like in your design.
+
+
+
+
+image.png
+image.png
+now fix other files in this code just increse the image size let me show you the output while click on + icon Pop for add cart in not open
+
+Looking at the issue, I can see that the popup isn't opening when clicking the + icon. The problem is in the JavaScript code and the popup styling. Let me fix the Product Grid with Popup section:
+
+
+Fixed Product Grid with Popup - Shopify Section
+Code 
+Now let me also fix the Gift Guide Grid section to make sure the popup functionality works properly there as well:
+
+
+Fixed Gift Guide Grid - Shopify Section
+Code 
+
+
+
+Continue
+
+
+Fixed Gift Guide Grid - Shopify Section
+Code 
+Key Fixes Made:
+1. Product Grid with Popup Section:
+Increased image size: Changed height from 444px to 500px
+Fixed popup functionality:
+Added proper z-index (9999) for popup overlay
+Fixed JavaScript event handling with proper error catching
+Added smooth transitions and better styling
+Used data-product-handle instead of just ID for better fetching
+Enhanced quick-add button:
+Increased size from 22px to 40px
+Added hover effects and better visibility
+Only shows on hover (except mobile)
+Improved popup styling:
+Better positioning and sizing
+Proper variant selection logic
+Enhanced mobile responsiveness
+2. **
+
+
+
 {{ 'component-card.css' | asset_url | stylesheet_tag }}
 
 <style>
@@ -353,3 +444,198 @@ class GiftGuideProduct {
         this.closePopup();
       }
     });
+    
+    // Add to cart functionality
+    this.addToCartButton.addEventListener('click', () => this.handleAddToCart());
+  }
+
+  async handleQuickAdd(productHandle) {
+    try {
+      const response = await fetch(`/products/${productHandle}.js`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product');
+      }
+      
+      const product = await response.json();
+      this.currentProduct = product;
+      this.renderPopup(product);
+      this.openPopup();
+    } catch (error) {
+      console.error('Error fetching product:', error);
+    }
+  }
+
+  renderPopup(product) {
+    this.popupContent.querySelector('.gift-guide-popup__title').textContent = product.title;
+    this.popupContent.querySelector('.gift-guide-popup__price').textContent = this.formatMoney(product.price);
+    this.popupContent.querySelector('.gift-guide-popup__description').innerHTML = product.description || '';
+
+    this.renderVariants(product);
+    
+    // Set default selected variant
+    this.selectedVariant = product.variants[0];
+    this.updateAddToCartButton();
+  }
+
+  renderVariants(product) {
+    const variantsContainer = this.popupContent.querySelector('.gift-guide-popup__variants');
+    variantsContainer.innerHTML = '';
+
+    if (product.variants.length <= 1) {
+      return; // No variants to show
+    }
+
+    product.options_with_values.forEach((option, index) => {
+      const container = document.createElement('div');
+      
+      const label = document.createElement('label');
+      label.className = 'gift-guide-popup__variant-label';
+      label.textContent = option.name;
+      
+      const select = document.createElement('select');
+      select.className = 'gift-guide-popup__variant-select';
+      select.dataset.option = option.name.toLowerCase();
+      select.dataset.optionIndex = index;
+      
+      option.values.forEach(value => {
+        const optionElement = document.createElement('option');
+        optionElement.value = value;
+        optionElement.textContent = value;
+        select.appendChild(optionElement);
+      });
+
+      // Add change event listener
+      select.addEventListener('change', () => this.updateSelectedVariant());
+
+      container.appendChild(label);
+      container.appendChild(select);
+      variantsContainer.appendChild(container);
+    });
+    
+    // Set initial variant
+    this.updateSelectedVariant();
+  }
+
+  updateSelectedVariant() {
+    const variantSelects = this.popupContent.querySelectorAll('.gift-guide-popup__variant-select');
+    const selectedOptions = Array.from(variantSelects).map(select => select.value);
+
+    // Find the matching variant
+    this.selectedVariant = this.currentProduct.variants.find(variant => {
+      return variant.options.every((option, index) => {
+        return selectedOptions.length === 0 || selectedOptions[index] === option;
+      });
+    });
+
+    if (!this.selectedVariant) {
+      this.selectedVariant = this.currentProduct.variants[0];
+    }
+
+    // Update price
+    this.popupContent.querySelector('.gift-guide-popup__price').textContent = 
+      this.formatMoney(this.selectedVariant.price);
+
+    this.updateAddToCartButton();
+  }
+
+  updateAddToCartButton() {
+    const button = this.popupContent.querySelector('.gift-guide-popup__add-to-cart');
+    
+    if (this.selectedVariant && this.selectedVariant.available) {
+      button.innerHTML = `
+        ADD TO CART
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      `;
+      button.disabled = false;
+      button.style.opacity = '1';
+    } else {
+      button.textContent = 'SOLD OUT';
+      button.disabled = true;
+      button.style.opacity = '0.6';
+    }
+  }
+
+  async handleAddToCart() {
+    if (!this.selectedVariant) return;
+
+    try {
+      await this.addItemToCart(this.selectedVariant.id, 1);
+
+      // Special logic: if Black or Medium is selected, add Soft Winter Jacket
+      const selectedOptions = Array.from(this.popupContent.querySelectorAll('.gift-guide-popup__variant-select'))
+        .map(select => select.value);
+      
+      if (selectedOptions.includes('Black') || selectedOptions.includes('Medium')) {
+        // Get Soft Winter Jacket variant ID from section settings
+        const winterJacketProduct = {{ section.settings.winter_jacket | json }};
+        if (winterJacketProduct && winterJacketProduct.variants && winterJacketProduct.variants.length > 0) {
+          await this.addItemToCart(winterJacketProduct.variants[0].id, 1);
+        }
+      }
+
+      this.closePopup();
+      document.dispatchEvent(new CustomEvent('cart:refresh'));
+      this.showSuccessMessage('Product added to cart!');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      this.showErrorMessage('Failed to add product to cart');
+    }
+  }
+
+  async addItemToCart(variantId, quantity) {
+    const response = await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        id: variantId,
+        quantity: quantity
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add item to cart');
+    }
+    
+    return response.json();
+  }
+
+  formatMoney(cents) {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(cents / 100);
+  }
+
+  openPopup() {
+    this.popup.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  closePopup() {
+    this.popup.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  showSuccessMessage(message) {
+    // You can implement a toast notification here
+    console.log(message);
+  }
+
+  showErrorMessage(message) {
+    // You can implement an error notification here
+    console.error(message);
+  }
+}
+
+// Initialize the gift guide functionality
+document.addEventListener('DOMContentLoaded', () => {
+  new GiftGuideProduct();
+});
+</script>
+    
+
