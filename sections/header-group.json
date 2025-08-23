@@ -53,36 +53,10 @@
         "padding_top": 20,
         "padding_bottom": 20
       }
-    },
-    "custom_banner_3n6RBp": {
-      "type": "custom-banner",
-      "name": "Custom Banner",
-      "settings": {
-        "heading": "The Gift Guide",
-        "subheading": "Discover Joy: Your Ultimate Holiday Gift Destination",
-        "tagline": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
-      }
-    },
-    "custom_grid_dba8jq": {
-      "type": "custom-grid",
-      "name": "Custom Product Grid",
-      "settings": {
-        "title": "Tisso vision in the wild",
-        "product_list": [
-          "black-leather-bag",
-          "blue-silk-tuxedo",
-          "chequered-red-shirt",
-          "classic-leather-jacket",
-          "classic-varsity-top",
-          "dark-denim-top"
-        ]
-      }
     }
   },
   "order": [
     "announcement-bar",
-    "header",
-    "custom_banner_3n6RBp",
-    "custom_grid_dba8jq"
+    "header"
   ]
 }
