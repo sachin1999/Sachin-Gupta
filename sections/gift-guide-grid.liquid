@@ -1,402 +1,6 @@
-{{ 'component-card.css' | asset_url | stylesheet_tag }}
-
-<style>
-.gift-guide-grid {
-  padding: 4rem 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.gift-guide-grid__title {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 3rem;
-}
-
-.gift-guide-grid__container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-}
-
-.gift-guide-product {
-  position: relative;
-  cursor: pointer;
-}
-
-.gift-guide-product__image {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-}
-
-.gift-guide-product__quick-add {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: #fff;
-  border: none;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  z-index: 2;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.gift-guide-product__quick-add:hover {
-  background: #FFD700;
-  transform: scale(1.1);
-}
-
-.gift-guide-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.gift-guide-popup__content {
-  position: relative;
-  width: 311px;
-  height: 447px;
-  background: #FFFFFF;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
-  border: 0.5px solid #000000;
-  padding: 0;
-  overflow: visible;
-  font-family: 'Jost', sans-serif;
-}
-
-.gift-guide-popup__close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-}
-
-.gift-guide-popup__title {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.gift-guide-popup__price {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-}
-
-.gift-guide-popup__description {
-  margin-bottom: 2rem;
-}
-
-.gift-guide-popup__variants {
-  position: absolute;
-  left: 6.43%;
-  right: 6.43%;
-  top: 41.61%;
-  bottom: 43.96%;
-}
-
-.gift-guide-popup__variant-label {
-  font-size: 14px;
-  color: #333333;
-  font-weight: 400;
-  margin-bottom: 8px;
-}
-
-.gift-guide-popup__variant-select {
-  width: 100%;
-  border: 0.5px solid #000000;
-  font-size: 16px;
-  font-family: 'Jost', sans-serif;
-  color: #000;
-  margin-bottom: 16px;
-  background: #fff;
-  padding: 8px;
-}
-
-.gift-guide-popup__add-to-cart {
-  position: absolute;
-  left: 6.43%;
-  right: 6.43%;
-  top: 84.34%;
-  bottom: 5.59%;
-  background: #000000;
-  color: #fff;
-  border: none;
-  font-family: 'Jost', sans-serif;
-  font-size: 16px;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.gift-guide-popup__add-to-cart:hover {
-  background: #FFF544;
-  color: #000;
-}
-
-@media screen and (max-width: 968px) {
-  .gift-guide-grid__container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (max-width: 568px) {
-  .gift-guide-grid__container {
-    grid-template-columns: 1fr;
-  }
-  
-  .gift-guide-grid {
-    padding: 2rem 1rem;
-  }
-}
-</style>
-
-<div class="gift-guide-grid">
-  <h2 class="gift-guide-grid__title">{{ section.settings.title }}</h2>
-  <div class="gift-guide-grid__container">
-    {%- for block in section.blocks -%}
-      {%- assign product = all_products[block.settings.product] -%}
-      <div class="gift-guide-product" data-product-id="{{ product.id }}">
-        <img
-          src="{{ product.featured_image | img_url: '600x' }}"
-          alt="{{ product.title }}"
-          class="gift-guide-product__image"
-          loading="lazy"
-        >
-        <button class="gift-guide-product__quick-add" aria-label="Quick view">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 5v14M5 12h14"/>
-          </svg>
-        </button>
-      </div>
-    {%- endfor -%}
-  </div>
-</div>
-
-<div class="gift-guide-popup" role="dialog" aria-modal="true">
-  <div class="gift-guide-popup__content">
-    <button class="gift-guide-popup__close" aria-label="Close">×</button>
-    <h3 class="gift-guide-popup__title"></h3>
-    <div class="gift-guide-popup__price"></div>
-    <div class="gift-guide-popup__description"></div>
-    <div class="gift-guide-popup__variants"></div>
-    <button class="gift-guide-popup__add-to-cart">
-      ADD TO CART
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
-    </button>
-  </div>
-</div>
-
-<script>
-  class GiftGuideProduct {
-    constructor() {
-      this.popup = document.querySelector('.gift-guide-popup');
-      this.popupContent = this.popup.querySelector('.gift-guide-popup__content');
-      this.closeButton = this.popup.querySelector('.gift-guide-popup__close');
-      this.addToCartButton = this.popup.querySelector('.gift-guide-popup__add-to-cart');
-      this.currentProduct = null;
-      
-      this.init();
-    }
-
-    init() {
-      this.bindEvents();
-    }
-
-    bindEvents() {
-      document.querySelectorAll('.gift-guide-product').forEach(product => {
-        product.addEventListener('click', (e) => this.handleProductClick(e));
-        
-        // Add separate event listener for quick-add button
-        const quickAddBtn = product.querySelector('.gift-guide-product__quick-add');
-        if (quickAddBtn) {
-          quickAddBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent product click event
-            this.handleQuickAdd(e, product.dataset.productId);
-          });
-        }
-      });
-
-      this.closeButton.addEventListener('click', () => this.closePopup());
-      this.addToCartButton.addEventListener('click', () => this.handleAddToCart());
-      
-      this.popup.addEventListener('click', (e) => {
-        if (e.target === this.popup) this.closePopup();
-      });
-    }
-
-    async handleProductClick(e) {
-      const productId = e.currentTarget.dataset.productId;
-      const response = await fetch(`/products/${productId}.js`);
-      const product = await response.json();
-      
-      this.currentProduct = product;
-      this.renderPopup(product);
-      this.openPopup();
-    }
-
-    renderPopup(product) {
-      this.popupContent.querySelector('.gift-guide-popup__title').textContent = product.title;
-      this.popupContent.querySelector('.gift-guide-popup__price').textContent = 
-        this.formatMoney(product.price);
-      this.popupContent.querySelector('.gift-guide-popup__description').innerHTML = 
-        product.description;
-
-      this.renderVariants(product);
-    }
-
-    renderVariants(product) {
-      const variantsContainer = this.popupContent.querySelector('.gift-guide-popup__variants');
-      variantsContainer.innerHTML = '';
-
-      product.options_with_values.forEach(option => {
-        const container = document.createElement('div');
-        
-        const label = document.createElement('label');
-        label.className = 'gift-guide-popup__variant-label';
-        label.textContent = option.name;
-        
-        const select = document.createElement('select');
-        select.className = 'gift-guide-popup__variant-select';
-        select.dataset.option = option.name.toLowerCase();
-        
-        option.values.forEach(value => {
-          const optionElement = document.createElement('option');
-          optionElement.value = value;
-          optionElement.textContent = value;
-          select.appendChild(optionElement);
-        });
-
-        container.appendChild(label);
-        container.appendChild(select);
-        variantsContainer.appendChild(container);
-      });
-    }
-
-    async handleAddToCart() {
-      // Get selected options from variant dropdowns
-      const variantSelects = this.popupContent.querySelectorAll('.gift-guide-popup__variant-select');
-      const selectedOptions = Array.from(variantSelects).map(select => select.value);
-
-      // Find the matching variant
-      let selectedVariant = null;
-      for (const variant of this.currentProduct.variants) {
-        let match = true;
-        for (let i = 0; i < variantSelects.length; i++) {
-          if (variant.options[i] !== selectedOptions[i]) {
-            match = false;
-            break;
-          }
-        }
-        if (match) {
-          selectedVariant = variant;
-          break;
-        }
-      }
-      if (!selectedVariant) return;
-
-      try {
-        await this.addItemToCart(selectedVariant.id, 1);
-
-        // Special logic: if Black or Medium is selected, add Soft Winter Jacket
-        if (selectedOptions.includes('Black') || selectedOptions.includes('Medium')) {
-          // Get Soft Winter Jacket variant ID from section settings
-          const winterJacketProduct = {{ section.settings.winter_jacket | json }};
-          if (winterJacketProduct && winterJacketProduct.variants && winterJacketProduct.variants.length > 0) {
-            await this.addItemToCart(winterJacketProduct.variants[0].id, 1);
-          }
-        }
-
-        this.closePopup();
-        document.dispatchEvent(new CustomEvent('cart:refresh'));
-      } catch (error) {
-        console.error('Error adding to cart:', error);
-      }
-    }
-
-    async addItemToCart(variantId, quantity) {
-      const response = await fetch('/cart/add.js', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: variantId,
-          quantity: quantity
-        })
-      });
-
-      if (!response.ok) throw new Error('Failed to add item to cart');
-      return response.json();
-    }
-
-    formatMoney(cents) {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-      }).format(cents / 100);
-    }
-
-    openPopup() {
-      this.popup.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-
-    closePopup() {
-      this.popup.style.display = 'none';
-      document.body.style.overflow = '';
-    }
-
-    async handleQuickAdd(e, productId) {
-      try {
-        const response = await fetch(`/products/${productId}.js`);
-        const product = await response.json();
-        
-        // If product has no variants, add directly to cart
-        if (product.variants.length === 1) {
-          await this.addItemToCart(product.variants[0].id, 1);
-          document.dispatchEvent(new CustomEvent('cart:refresh'));
-        } else {
-          // If product has variants, open popup for selection
-          this.currentProduct = product;
-          this.renderPopup(product);
-          this.openPopup();
-        }
-      } catch (error) {
-        console.error('Error in quick add:', error);
-      }
-    }
-  }
-
-  // Initialize the gift guide functionality
-  window.addEventListener('DOMContentLoaded', () => {
-    new GiftGuideProduct();
-  });
-</script>
-
 {% schema %}
 {
-  "name": "Gift Guide Grid",
+  "name": "Product Grid with Popup",
   "settings": [
     {
       "type": "text",
@@ -407,7 +11,7 @@
     {
       "type": "product",
       "id": "winter_jacket",
-      "label": "Soft Winter Jacket Product"
+      "label": "Soft Winter Jacket Product (Auto-add for Black/Medium)"
     }
   ],
   "blocks": [
@@ -418,7 +22,7 @@
         {
           "type": "product",
           "id": "product",
-          "label": "Product"
+          "label": "Select Product"
         }
       ]
     }
@@ -426,7 +30,7 @@
   "max_blocks": 6,
   "presets": [
     {
-      "name": "Gift Guide Grid",
+      "name": "Product Grid with Popup",
       "blocks": [
         {
           "type": "product"
@@ -451,3 +55,809 @@
   ]
 }
 {% endschema %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
+
+.product-grid {
+  padding: 60px 20px;
+  max-width: 1440px;
+  margin: 0 auto;
+  font-family: 'Jost', sans-serif;
+}
+
+.product-grid__title {
+  font-family: 'Jost', sans-serif;
+  font-size: 36px;
+  font-weight: 500;
+  margin-bottom: 40px;
+  text-align: center;
+  color: #000;
+}
+
+.product-grid__items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.product-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.product-item__image {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  display: block;
+}
+
+.product-item:hover .product-item__image {
+  transform: scale(1.05);
+}
+
+.product-item__info {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  color: white;
+  padding: 30px 20px 20px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.product-item:hover .product-item__info {
+  transform: translateY(0);
+}
+
+.product-item__title {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.product-item__price {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+.quick-view-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 5;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.product-item:hover .quick-view-button {
+  opacity: 1;
+  visibility: visible;
+}
+
+.quick-view-button:hover {
+  background: #FFF544;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.quick-view-button svg {
+  width: 24px;
+  height: 24px;
+  stroke: #000;
+  stroke-width: 2;
+}
+
+/* Popup Styles */
+.product-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.product-popup-overlay.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+.product-popup {
+  background: #fff;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  font-family: 'Jost', sans-serif;
+  position: relative;
+  transform: scale(0.8);
+  transition: transform 0.3s ease;
+}
+
+.product-popup-overlay.active .product-popup {
+  transform: scale(1);
+}
+
+.product-popup__header {
+  position: relative;
+  padding: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.product-popup__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+  color: #666;
+}
+
+.product-popup__close:hover {
+  background: #f5f5f5;
+  color: #000;
+}
+
+.product-popup__title {
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #000;
+  padding-right: 50px;
+  line-height: 1.2;
+}
+
+.product-popup__price {
+  font-size: 22px;
+  font-weight: 500;
+  color: #000;
+}
+
+.product-popup__body {
+  padding: 30px;
+}
+
+.product-popup__description {
+  margin-bottom: 30px;
+  line-height: 1.6;
+  color: #666;
+  font-size: 16px;
+}
+
+.product-popup__variants {
+  margin-bottom: 30px;
+}
+
+.variant-group {
+  margin-bottom: 20px;
+}
+
+.variant-group__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.variant-group__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.variant-option {
+  padding: 12px 20px;
+  border: 2px solid #ddd;
+  background: #fff;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 6px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.variant-option:hover {
+  border-color: #333;
+}
+
+.variant-option.selected {
+  border-color: #000;
+  background: #000;
+  color: #fff;
+}
+
+.variant-option.unavailable {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.product-popup__add-to-cart {
+  width: 100%;
+  height: 55px;
+  background: #000;
+  color: #fff;
+  border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  letter-spacing: 0.5px;
+}
+
+.product-popup__add-to-cart:hover {
+  background: #FFF544;
+  color: #000;
+}
+
+.product-popup__add-to-cart:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.product-popup__add-to-cart svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Loading State */
+.product-popup__loading {
+  display: none;
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.product-popup__loading.active {
+  display: block;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 968px) {
+  .product-grid__items {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .product-item__image {
+    height: 400px;
+  }
+  
+  .product-popup {
+    width: 95%;
+    max-width: 400px;
+  }
+  
+  .product-popup__header,
+  .product-popup__body {
+    padding: 25px;
+  }
+  
+  .product-popup__title {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 568px) {
+  .product-grid__items {
+    grid-template-columns: 1fr;
+  }
+  
+  .product-grid {
+    padding: 40px 15px;
+  }
+  
+  .product-grid__title {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  
+  .product-item__image {
+    height: 350px;
+  }
+  
+  .quick-view-button {
+    opacity: 1;
+    visibility: visible;
+    width: 45px;
+    height: 45px;
+  }
+  
+  .product-popup {
+    width: 98%;
+  }
+  
+  .product-popup__header,
+  .product-popup__body {
+    padding: 20px;
+  }
+  
+  .product-popup__title {
+    font-size: 22px;
+  }
+  
+  .variant-group__options {
+    gap: 8px;
+  }
+  
+  .variant-option {
+    padding: 10px 15px;
+    font-size: 13px;
+  }
+}
+</style>
+
+<div class="product-grid">
+  <h2 class="product-grid__title">{{ section.settings.title }}</h2>
+  
+  <div class="product-grid__items">
+    {% for block in section.blocks %}
+      {% if block.settings.product != blank %}
+        {% assign product = all_products[block.settings.product] %}
+        <div class="product-item" 
+             data-product-id="{{ product.id }}" 
+             data-product-handle="{{ product.handle }}"
+             data-block-id="{{ block.id }}">
+          
+          {% if product.featured_image %}
+            <img 
+              src="{{ product.featured_image | image_url: width: 700, height: 700, crop: 'center' }}"
+              alt="{{ product.title }}"
+              class="product-item__image"
+              loading="lazy"
+            >
+          {% else %}
+            <div class="product-item__image" style="background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #999;">
+              No Image
+            </div>
+          {% endif %}
+          
+          <div class="product-item__info">
+            <h3 class="product-item__title">{{ product.title }}</h3>
+            <div class="product-item__price">
+              {{ product.price | money }}
+              {% if product.compare_at_price > product.price %}
+                <span style="text-decoration: line-through; opacity: 0.7; margin-left: 8px;">
+                  {{ product.compare_at_price | money }}
+                </span>
+              {% endif %}
+            </div>
+          </div>
+          
+          <button class="quick-view-button" aria-label="Quick view {{ product.title }}">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </button>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Popup Overlay -->
+<div class="product-popup-overlay" id="productPopupOverlay">
+  <div class="product-popup">
+    <!-- Loading State -->
+    <div class="product-popup__loading" id="popupLoading">
+      Loading product...
+    </div>
+    
+    <!-- Product Content -->
+    <div class="product-popup__content" id="popupContent" style="display: none;">
+      <div class="product-popup__header">
+        <button class="product-popup__close" aria-label="Close popup">&times;</button>
+        <h3 class="product-popup__title"></h3>
+        <div class="product-popup__price"></div>
+      </div>
+      
+      <div class="product-popup__body">
+        <div class="product-popup__description"></div>
+        <div class="product-popup__variants" id="popupVariants"></div>
+        <button class="product-popup__add-to-cart">
+          ADD TO CART
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+  
+  class ProductPopupManager {
+    constructor() {
+      this.overlay = document.getElementById('productPopupOverlay');
+      this.popup = this.overlay.querySelector('.product-popup');
+      this.loading = document.getElementById('popupLoading');
+      this.content = document.getElementById('popupContent');
+      this.closeBtn = this.overlay.querySelector('.product-popup__close');
+      this.addToCartBtn = this.overlay.querySelector('.product-popup__add-to-cart');
+      this.variantsContainer = document.getElementById('popupVariants');
+      
+      this.currentProduct = null;
+      this.selectedVariant = null;
+      this.winterJacketProduct = {{ section.settings.winter_jacket | json }};
+      
+      this.init();
+    }
+    
+    init() {
+      this.bindEvents();
+      console.log('ProductPopupManager initialized');
+    }
+    
+    bindEvents() {
+      // Quick view button clicks
+      document.addEventListener('click', (e) => {
+        const quickViewBtn = e.target.closest('.quick-view-button');
+        if (quickViewBtn) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          const productItem = quickViewBtn.closest('.product-item');
+          if (productItem) {
+            const productHandle = productItem.dataset.productHandle;
+            console.log('Quick view clicked for:', productHandle);
+            this.openProductPopup(productHandle);
+          }
+        }
+      });
+      
+      // Close popup
+      this.closeBtn.addEventListener('click', () => this.closePopup());
+      
+      // Close on overlay click
+      this.overlay.addEventListener('click', (e) => {
+        if (e.target === this.overlay) {
+          this.closePopup();
+        }
+      });
+      
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
+          this.closePopup();
+        }
+      });
+      
+      // Add to cart
+      this.addToCartBtn.addEventListener('click', () => this.handleAddToCart());
+    }
+    
+    async openProductPopup(productHandle) {
+      if (!productHandle) {
+        console.error('No product handle provided');
+        return;
+      }
+      
+      this.showLoading();
+      this.overlay.classList.add('active');
+      
+      try {
+        console.log('Fetching product:', productHandle);
+        const response = await fetch(`/products/${productHandle}.js`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const product = await response.json();
+        console.log('Product fetched:', product);
+        
+        this.currentProduct = product;
+        this.selectedVariant = product.variants[0];
+        
+        this.renderProduct(product);
+        this.hideLoading();
+        
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        this.hideLoading();
+        this.closePopup();
+        alert('Sorry, there was an error loading the product. Please try again.');
+      }
+    }
+    
+    renderProduct(product) {
+      // Set product info
+      this.content.querySelector('.product-popup__title').textContent = product.title;
+      this.content.querySelector('.product-popup__price').textContent = this.formatMoney(product.price);
+      
+      const description = this.content.querySelector('.product-popup__description');
+      description.innerHTML = product.description || 'No description available.';
+      
+      // Render variants
+      this.renderVariants(product);
+      
+      // Update add to cart button
+      this.updateAddToCartButton();
+    }
+    
+    renderVariants(product) {
+      this.variantsContainer.innerHTML = '';
+      
+      if (!product.variants || product.variants.length <= 1) {
+        console.log('No variants to render');
+        return;
+      }
+      
+      console.log('Rendering variants for:', product.title);
+      console.log('Product options:', product.options);
+      
+      // Group variants by options
+      const optionGroups = {};
+      
+      product.variants.forEach(variant => {
+        variant.options.forEach((option, index) => {
+          const optionName = product.options[index];
+          if (!optionGroups[optionName]) {
+            optionGroups[optionName] = new Set();
+          }
+          optionGroups[optionName].add(option);
+        });
+      });
+      
+      // Create option selectors
+      Object.entries(optionGroups).forEach(([optionName, values]) => {
+        const group = document.createElement('div');
+        group.className = 'variant-group';
+        
+        const label = document.createElement('label');
+        label.className = 'variant-group__label';
+        label.textContent = optionName;
+        
+        const options = document.createElement('div');
+        options.className = 'variant-group__options';
+        options.dataset.optionName = optionName;
+        
+        values.forEach(value => {
+          const option = document.createElement('button');
+          option.className = 'variant-option';
+          option.textContent = value;
+          option.dataset.value = value;
+          option.type = 'button';
+          
+          option.addEventListener('click', () => this.selectOption(optionName, value, option));
+          
+          options.appendChild(option);
+        });
+        
+        // Select first option by default
+        if (options.firstElementChild) {
+          options.firstElementChild.classList.add('selected');
+        }
+        
+        group.appendChild(label);
+        group.appendChild(options);
+        this.variantsContainer.appendChild(group);
+      });
+      
+      // Update selected variant based on default selections
+      this.updateSelectedVariant();
+    }
+    
+    selectOption(optionName, value, clickedElement) {
+      // Remove selected class from siblings
+      const siblings = clickedElement.parentElement.querySelectorAll('.variant-option');
+      siblings.forEach(sibling => sibling.classList.remove('selected'));
+      
+      // Add selected class to clicked option
+      clickedElement.classList.add('selected');
+      
+      // Update selected variant
+      this.updateSelectedVariant();
+    }
+    
+    updateSelectedVariant() {
+      if (!this.currentProduct || !this.currentProduct.variants) return;
+      
+      // Get selected options
+      const selectedOptions = [];
+      const optionGroups = this.variantsContainer.querySelectorAll('.variant-group__options');
+      
+      optionGroups.forEach(group => {
+        const selected = group.querySelector('.variant-option.selected');
+        if (selected) {
+          selectedOptions.push(selected.dataset.value);
+        }
+      });
+      
+      console.log('Selected options:', selectedOptions);
+      
+      // Find matching variant
+      this.selectedVariant = this.currentProduct.variants.find(variant => {
+        return variant.options.every((option, index) => {
+          return selectedOptions.length === 0 || selectedOptions[index] === option;
+        });
+      });
+      
+      if (!this.selectedVariant) {
+        this.selectedVariant = this.currentProduct.variants[0];
+      }
+      
+      console.log('Selected variant:', this.selectedVariant);
+      
+      // Update price
+      this.content.querySelector('.product-popup__price').textContent = 
+        this.formatMoney(this.selectedVariant.price);
+      
+      // Update add to cart button
+      this.updateAddToCartButton();
+    }
+    
+    updateAddToCartButton() {
+      const btn = this.addToCartBtn;
+      
+      if (this.selectedVariant && this.selectedVariant.available) {
+        btn.disabled = false;
+        btn.innerHTML = `
+          ADD TO CART
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        `;
+        btn.style.opacity = '1';
+      } else {
+        btn.disabled = true;
+        btn.textContent = 'SOLD OUT';
+        btn.style.opacity = '0.6';
+      }
+    }
+    
+    async handleAddToCart() {
+      if (!this.selectedVariant || !this.selectedVariant.available) {
+        console.log('No variant selected or variant unavailable');
+        return;
+      }
+      
+      try {
+        console.log('Adding to cart:', this.selectedVariant.id);
+        
+        // Add main product
+        await this.addToCart(this.selectedVariant.id, 1);
+        
+        // Check for winter jacket auto-add logic
+        const selectedOptions = [];
+        this.variantsContainer.querySelectorAll('.variant-option.selected').forEach(option => {
+          selectedOptions.push(option.dataset.value);
+        });
+        
+        if ((selectedOptions.includes('Black') || selectedOptions.includes('Medium')) && this.winterJacketProduct) {
+          console.log('Auto-adding winter jacket');
+          if (this.winterJacketProduct.variants && this.winterJacketProduct.variants.length > 0) {
+            await this.addToCart(this.winterJacketProduct.variants[0].id, 1);
+          }
+        }
+        
+        // Close popup and refresh cart
+        this.closePopup();
+        document.dispatchEvent(new CustomEvent('cart:refresh'));
+        
+        // Show success message (you can implement a toast here)
+        console.log('Product added to cart successfully');
+        
+      } catch (error) {
+        console.error('Error adding to cart:', error);
+        alert('Sorry, there was an error adding the product to cart. Please try again.');
+      }
+    }
+    
+    async addToCart(variantId, quantity) {
+      const response = await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          id: variantId,
+          quantity: quantity
+        })
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to add to cart: ${errorText}`);
+      }
+      
+      return response.json();
+    }
+    
+    formatMoney(cents) {
+      return (cents / 100).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+    }
+    
+    showLoading() {
+      this.loading.classList.add('active');
+      this.content.style.display = 'none';
+    }
+    
+    hideLoading() {
+      this.loading.classList.remove('active');
+      this.content.style.display = 'block';
+    }
+    
+    closePopup() {
+      this.overlay.classList.remove('active');
+      document.body.style.overflow = '';
+      
+      // Reset content after animation
+      setTimeout(() => {
+        if (!this.overlay.classList.contains('active')) {
+          this.variantsContainer.innerHTML = '';
+          this.currentProduct = null;
+          this.selectedVariant = null;
+        }
+      }, 300);
+    }
+  }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new ProductPopupManager();
+    });
+  } else {
+    new ProductPopupManager();
+  }
+})();
+</script>
