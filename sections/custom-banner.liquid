@@ -1,0 +1,167 @@
+{% schema %}
+{
+  "name": "Custom Banner",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "The Gift Guide"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Discover Joy: Your Ultimate Holiday Gift Destination"
+    },
+    {
+      "type": "text",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "SUSTAINABLE, ETHICALLY MADE ACTIVEWEAR"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Banner"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="banner">
+  <div class="banner__header">
+    <button class="mobile-nav-toggle">
+      <span class="visually-hidden">Menu</span>
+      ≡
+    </button>
+    <h1 class="banner__brand">TISSO VISION</h1>
+  </div>
+  
+  <div class="banner__content">
+    <h2 class="banner__heading">{{ section.settings.heading }}</h2>
+    <p class="banner__subheading">{{ section.settings.subheading }}</p>
+    
+    <div class="banner__buttons">
+      <a href="/collections/all" class="button button--primary">
+        SHOP NOW <span class="arrow">→</span>
+      </a>
+      <a href="/collections/all" class="button button--secondary">
+        SHOP NOW <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <div class="banner__illustration">
+      <!-- SVG illustrations will go here -->
+    </div>
+
+    <p class="banner__tagline">{{ section.settings.tagline }}</p>
+  </div>
+</div>
+
+<style>
+.banner {
+  padding: 2rem;
+  background-color: #fff;
+  text-align: center;
+}
+
+.banner__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.banner__brand {
+  font-size: 2rem;
+  margin: 0;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.banner__content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.banner__heading {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.banner__subheading {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.banner__buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.button {
+  padding: 1rem 2rem;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.button--primary {
+  background-color: #000;
+  color: #fff;
+}
+
+.button--primary:hover {
+  background-color: #ffeb3b;
+  color: #000;
+}
+
+.button--secondary {
+  background-color: #ffeb3b;
+  color: #000;
+}
+
+.button--secondary:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+.button .arrow {
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+.button:hover .arrow {
+  transform: translateX(5px);
+}
+
+.banner__tagline {
+  margin-top: 2rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  .banner__heading {
+    font-size: 2rem;
+  }
+
+  .banner__subheading {
+    font-size: 1.2rem;
+  }
+
+  .banner__buttons {
+    flex-direction: column;
+  }
+}
+</style>

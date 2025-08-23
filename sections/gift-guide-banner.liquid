@@ -10,8 +10,8 @@
     },
     {
       "type": "text",
-      "id": "subtitle",
-      "label": "Subtitle",
+      "id": "header_text",
+      "label": "Header Text",
       "default": "Find the ideal gift for your loved ones."
     },
     {
@@ -78,9 +78,15 @@
   flex-grow: 0;
 }
 
-.logo {
+.header-logo {
   width: 151.44px;
   height: 19px;
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 100%;
+  color: #000000;
   flex: none;
   order: 0;
   flex-grow: 0;
@@ -112,7 +118,7 @@
   flex-grow: 0;
 }
 
-.button-yellow {
+.choose-gift-button__bg {
   box-sizing: border-box;
   position: absolute;
   left: 0%;
@@ -122,7 +128,7 @@
   background: #FFF544;
 }
 
-.button-line {
+.choose-gift-button__line {
   position: absolute;
   left: 77.78%;
   right: 10.63%;
@@ -132,7 +138,7 @@
   border: 1.5px solid #000000;
 }
 
-.button-text {
+.choose-gift-button__text {
   position: absolute;
   left: 19.81%;
   right: 30.92%;
@@ -210,7 +216,7 @@
   color: #000000;
 }
 
-.shop-now-line {
+.shop-now-button__line {
   position: absolute;
   left: 77.78%;
   right: 10.63%;
@@ -218,9 +224,10 @@
   bottom: 51.01%;
   background: #FFFFFF;
   border: 1.5px solid #FFFFFF;
+  transition: all 0.3s ease;
 }
 
-.shop-now-text {
+.shop-now-button__text {
   position: absolute;
   left: 25.03%;
   right: 35.42%;
@@ -236,6 +243,7 @@
   text-align: center;
   text-transform: uppercase;
   color: #FFFFFF;
+  transition: color 0.3s ease;
 }
 
 .footer-banner {
@@ -286,21 +294,30 @@
 }
 </style>
 
-<div class="gift-guide-banner">
-  <div class="gift-guide-banner__content">
-    <h3 class="gift-guide-banner__title">{{ section.settings.title }}</h3>
-    <div class="gift-guide-banner__subtitle">{{ section.settings.subtitle }}</div>
-    <h1 class="gift-guide-banner__heading">{{ section.settings.heading }}</h1>
-    <div class="gift-guide-banner__description">
+<div class="gift-guide-container">
+  <div class="gift-guide-header">
+    <div class="header-logo">{{ section.settings.title }}</div>
+    <div class="header-text">{{ section.settings.header_text }}</div>
+    <button class="choose-gift-button">
+      <div class="choose-gift-button__bg"></div>
+      <div class="choose-gift-button__line"></div>
+      <span class="choose-gift-button__text">CHOOSE GIFT</span>
+    </button>
+  </div>
+
+  <div class="main-content">
+    <h1 class="main-heading">{{ section.settings.heading }}</h1>
+    <div class="main-description">
       {{ section.settings.description }}
     </div>
-    <button class="gift-guide-banner__button">
-      {{ section.settings.button_text }}
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
-      </svg>
+    <button class="shop-now-button">
+      <div class="shop-now-button__line"></div>
+      <span class="shop-now-button__text">{{ section.settings.button_text }}</span>
     </button>
-    <div class="gift-guide-banner__footer">
+  </div>
+
+  <div class="footer-banner">
+    <div class="footer-text">
       {{ section.settings.footer_text }}
     </div>
   </div>
