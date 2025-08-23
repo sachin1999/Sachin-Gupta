@@ -49,409 +49,358 @@
 {% endschema %}
 
 <style>
-.gift-guide-banner {
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
+
+.gift-guide-wrapper {
+  font-family: 'Jost', sans-serif;
   width: 100%;
   max-width: 1440px;
   margin: 0 auto;
   background: #FFFFFF;
-  padding: 20px;
 }
 
+/* Header Section */
 .gift-guide-header {
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 50px;
-  gap: 24px;
-  width: 100%;
-  max-width: 1440px;
+  padding: 20px 50px;
   height: 64px;
   background: #F5F5F5;
-  flex: none;
-  order: 0;
-  align-self: stretch;
-  flex-grow: 0;
+  width: 100%;
 }
 
 .header-logo {
-  width: 151.44px;
-  height: 19px;
-  font-family: 'Jost';
-  font-style: normal;
+  font-family: 'Jost', sans-serif;
   font-weight: 500;
   font-size: 20px;
-  line-height: 100%;
+  line-height: 1;
   color: #000000;
-  flex: none;
-  order: 0;
-  flex-grow: 0;
+  letter-spacing: 0.5px;
 }
 
 .header-text {
-  width: 260px;
-  height: 14px;
-  font-family: 'Jost';
-  font-style: normal;
+  font-family: 'Jost', sans-serif;
   font-weight: 400;
   font-size: 16px;
-  line-height: 13px;
-  display: flex;
-  align-items: center;
-  text-align: center;
   color: #000000;
-  flex: none;
-  order: 1;
-  flex-grow: 0;
+  text-align: center;
+  flex: 1;
+  margin: 0 20px;
 }
 
 .choose-gift-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   width: 207px;
   height: 44px;
-  position: relative;
-  flex: none;
-  order: 2;
-  flex-grow: 0;
-}
-
-.choose-gift-button__bg {
-  box-sizing: border-box;
-  position: absolute;
-  left: 0%;
-  right: 0%;
-  top: 0%;
-  bottom: 0%;
   background: #FFF544;
-}
-
-.choose-gift-button__line {
-  position: absolute;
-  left: 77.78%;
-  right: 10.63%;
-  top: 48.99%;
-  bottom: 51.01%;
-  background: #000000;
-  border: 1.5px solid #000000;
-}
-
-.choose-gift-button__text {
-  position: absolute;
-  left: 19.81%;
-  right: 30.92%;
-  top: 26.51%;
-  bottom: 25.76%;
-  font-family: 'Jost';
-  font-style: normal;
+  border: none;
+  cursor: pointer;
+  font-family: 'Jost', sans-serif;
   font-weight: 400;
   font-size: 16px;
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  text-align: center;
   text-transform: uppercase;
   color: #000000;
-}
-
-.main-content {
-  width: 1440px;
-  height: 780px;
-  flex: none;
-  order: 1;
-  flex-grow: 0;
-  position: relative;
-  background: #FFFFFF;
-}
-
-.gift-guide-title {
-  position: absolute;
-  left: 4.65%;
-  right: 63.47%;
-  top: 55.69%;
-  bottom: 36.33%;
-  font-family: 'Jost';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 70px;
-  line-height: 100%;
-  display: flex;
-  align-items: center;
-  color: #000000;
-}
-
-.gift-guide-description {
-  position: absolute;
-  width: 483px;
-  height: 84px;
-  left: calc(50% - 483px/2 - 411.5px);
-  top: 609px;
-  font-family: 'Jost';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 140%;
-  display: flex;
-  align-items: center;
-  color: #000000;
-}
-
-.shop-now-button {
-  position: absolute;
-  width: 220px;
-  height: 50px;
-  left: 67px;
-  top: 743px;
-  background: #FFF544;
-  transition: background-color 0.3s ease;
-  color: #000;
-  font-family: 'Jost', sans-serif;
-  font-weight: 500;
-}
-
-.shop-now-button:hover {
-  background: #000;
-}
-
-.shop-now-button:hover .shop-now-button__text {
-  color: #FFF544;
-}
-
-.shop-now-button__line {
-  position: absolute;
-  left: 77.78%;
-  right: 10.63%;
-  top: 48.99%;
-  bottom: 51.01%;
-  background: #FFFFFF;
-  border: 1.5px solid #FFFFFF;
   transition: all 0.3s ease;
 }
 
-.shop-now-button__text {
-  position: absolute;
-  left: 25.03%;
-  right: 35.42%;
-  top: 28.51%;
-  bottom: 29.49%;
-  font-family: 'Jost';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 20px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  text-transform: uppercase;
-  color: #FFFFFF;
-  transition: color 0.3s ease;
-}
-
-.footer-banner {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 50px;
-  gap: 375px;
-  width: 1440px;
-  height: 34px;
-  background: #F5F5F5;
-  flex: none;
-  order: 2;
-  align-self: stretch;
-  flex-grow: 0;
-}
-
-.footer-text {
-  width: 451px;
-  height: 14px;
-  font-family: 'Jost';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 13px;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  color: #000000;
-  flex: none;
-  order: 0;
-  flex-grow: 0;
-}
-
-.banner-svg-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 780px;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.banner-svg {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.shop-now-button {
-  position: absolute;
-  width: 220px;
-  height: 50px;
-  left: 67px;
-  top: 743px;
-  background: #FFF544;
-  transition: background-color 0.3s ease;
-  color: #000;
-  font-family: 'Jost', sans-serif;
-  font-weight: 500;
-}
-
-.choose-gift-btn {
-  background: #FFF544;
-  color: #000;
-  font-family: 'Jost', sans-serif;
-  font-size: 1rem;
-  padding: 12px 32px;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  margin-right: 32px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.choose-gift-btn:hover {
-  background: #000;
+.choose-gift-button:hover {
+  background: #000000;
   color: #FFF544;
 }
 
-.banner-header {
+/* Main Content Section */
+.main-content {
+  position: relative;
   width: 100%;
+  height: 780px;
+  background: #FFFFFF;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 24px 0 0 0;
-}
-
-.banner-logo {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-left: 32px;
-}
-
-.banner-header-text {
-  font-size: 1rem;
-  color: #333;
-  margin: 0 16px;
-}
-
-.banner-image {
-  width: 100%;
-  display: flex;
   justify-content: center;
+}
+
+.content-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
   align-items: center;
-  margin-bottom: 32px;
+  justify-content: space-between;
+  padding: 0 67px;
+}
+
+.text-content {
+  position: absolute;
+  left: 67px;
+  bottom: 160px;
+  max-width: 500px;
+  z-index: 2;
 }
 
 .gift-guide-title {
-  font-size: 3rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 16px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  font-size: 70px;
+  line-height: 1;
+  color: #000000;
+  margin: 0 0 24px 0;
 }
 
 .gift-guide-description {
-  font-size: 1.25rem;
-  text-align: center;
-  margin-bottom: 32px;
-  max-width: 600px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 1.4;
+  color: #000000;
+  margin: 0 0 40px 0;
+  max-width: 483px;
 }
 
 .shop-now-button {
-  padding: 16px 32px;
-  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 220px;
+  height: 50px;
+  background: #FFF544;
   border: none;
-  border-radius: 4px;
-  transition: background 0.3s, color 0.3s;
   cursor: pointer;
-  margin-bottom: 32px;
   font-family: 'Jost', sans-serif;
   font-weight: 500;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #000000;
+  transition: all 0.3s ease;
 }
 
-.footer-banner {
-  width: 100%;
-  text-align: center;
-  margin-top: auto;
-  padding: 16px 0;
-  background: #fff544;
-  color: #000;
-  font-size: 1rem;
+.shop-now-button:hover {
+  background: #000000;
+  color: #FFF544;
+}
+
+.banner-image-container {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 600px;
+  height: 500px;
+  z-index: 1;
 }
 
 .banner-svg {
-  max-width: 500px;
   width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+  height: 100%;
+  object-fit: contain;
 }
 
-@media screen and (max-width: 768px) {
-  .gift-guide-banner {
-    padding: 2rem 0.5rem;
-  }
+/* Footer Section */
+.footer-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 50px;
+  height: 34px;
+  background: #F5F5F5;
+  width: 100%;
+}
 
+.footer-text {
+  font-family: 'Jost', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+  color: #000000;
+  text-align: center;
+}
+
+/* Arrow Icons */
+.arrow-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+  .content-container {
+    padding: 0 40px;
+  }
+  
+  .text-content {
+    left: 40px;
+  }
+  
+  .banner-image-container {
+    right: 40px;
+    width: 500px;
+    height: 400px;
+  }
+  
+  .gift-guide-title {
+    font-size: 60px;
+  }
+}
+
+@media screen and (max-width: 968px) {
   .gift-guide-header {
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     height: auto;
-    padding: 10px 10px;
+    padding: 20px;
+    text-align: center;
   }
-
-  .banner-image {
-    margin-bottom: 16px;
+  
+  .header-text {
+    margin: 0;
   }
-
+  
+  .choose-gift-button {
+    width: 180px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .main-content {
+    height: auto;
+    min-height: 600px;
+    flex-direction: column;
+    padding: 40px 20px;
+  }
+  
+  .content-container {
+    flex-direction: column;
+    padding: 0;
+  }
+  
+  .text-content {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    text-align: center;
+    max-width: 100%;
+    order: 2;
+    margin-top: 40px;
+  }
+  
+  .banner-image-container {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    max-width: 400px;
+    height: 300px;
+    order: 1;
+  }
+  
   .gift-guide-title {
-    font-size: 2rem;
+    font-size: 48px;
   }
-
+  
   .gift-guide-description {
-    font-size: 1rem;
-    max-width: 90vw;
+    font-size: 18px;
+    text-align: center;
   }
-
+  
   .shop-now-button {
-    padding: 12px 16px;
-    font-size: 0.9rem;
+    width: 200px;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 568px) {
+  .gift-guide-header {
+    padding: 15px;
+  }
+  
+  .header-logo {
+    font-size: 18px;
+  }
+  
+  .header-text {
+    font-size: 14px;
+  }
+  
+  .choose-gift-button {
+    width: 160px;
+    height: 36px;
+    font-size: 12px;
+  }
+  
+  .main-content {
+    min-height: 500px;
+    padding: 30px 15px;
+  }
+  
+  .gift-guide-title {
+    font-size: 36px;
+    margin-bottom: 20px;
+  }
+  
+  .gift-guide-description {
+    font-size: 16px;
+    margin-bottom: 30px;
+  }
+  
+  .shop-now-button {
+    width: 180px;
+    height: 45px;
+    font-size: 14px;
+  }
+  
+  .banner-image-container {
+    height: 250px;
+  }
+  
+  .footer-text {
+    font-size: 14px;
   }
 }
 </style>
 
-<div class="gift-guide-banner" style="background:#F5F5F5;min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
-  <div class="banner-header" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:24px 0 0 0;">
-    <div class="banner-logo" style="font-size:1.5rem;font-weight:600;margin-left:32px;">{{ section.settings.title }}</div>
-    <div class="banner-header-text" style="font-size:1rem;color:#333;margin:0 16px;">{{ section.settings.header_text }}</div>
-    <button class="choose-gift-btn" style="background:#FFF544;color:#000;font-family:'Jost',sans-serif;font-size:1rem;padding:12px 32px;border:none;border-radius:4px;font-weight:500;cursor:pointer;margin-right:32px;display:flex;align-items:center;gap:8px;">
+<div class="gift-guide-wrapper">
+  <!-- Header Section -->
+  <div class="gift-guide-header">
+    <div class="header-logo">{{ section.settings.title }}</div>
+    <div class="header-text">{{ section.settings.header_text }}</div>
+    <button class="choose-gift-button">
       CHOOSE GIFT
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      <svg class="arrow-icon" viewBox="0 0 24 24">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
     </button>
   </div>
-  <div class="banner-image" style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:32px;">
-    {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Banner Illustration', 'banner-svg' }}
+
+  <!-- Main Content Section -->
+  <div class="main-content">
+    <div class="content-container">
+      <div class="text-content">
+        <h1 class="gift-guide-title">{{ section.settings.heading }}</h1>
+        <div class="gift-guide-description">{{ section.settings.description }}</div>
+        <button class="shop-now-button">
+          {{ section.settings.button_text }}
+          <svg class="arrow-icon" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="banner-image-container">
+        {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Gift Guide Illustration', 'banner-svg' }}
+      </div>
+    </div>
   </div>
-  <h1 class="gift-guide-title" style="font-size:3rem;font-weight:600;text-align:center;margin-bottom:16px;">{{ section.settings.heading }}</h1>
-  <div class="gift-guide-description" style="font-size:1.25rem;text-align:center;margin-bottom:32px;max-width:600px;">{{ section.settings.description }}</div>
-  <button class="shop-now-button" style="background:#FFF544;color:#000;padding:16px 32px;font-size:1rem;border:none;border-radius:4px;transition:background 0.3s;color 0.3s;cursor:pointer;margin-bottom:32px;font-family:'Jost',sans-serif;font-weight:500;">
-    <span class="shop-now-button__text">{{ section.settings.button_text }}</span>
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-  </button>
-  <div class="footer-banner" style="width:100%;text-align:center;margin-top:auto;padding:16px 0;background:#fff544;color:#000;font-size:1rem;">
-    {{ section.settings.footer_text }}
+
+  <!-- Footer Section -->
+  <div class="footer-banner">
+    <div class="footer-text">{{ section.settings.footer_text }}</div>
   </div>
 </div>
