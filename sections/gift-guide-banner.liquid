@@ -272,6 +272,23 @@
   flex-grow: 0;
 }
 
+.banner-svg-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 780px;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.banner-svg {
+  width: 100vw;
+  height: 780px;
+  object-fit: contain;
+  display: block;
+}
+
 @media screen and (max-width: 768px) {
   .gift-guide-banner {
     padding: 3rem 1rem;
@@ -287,7 +304,13 @@
 }
 </style>
 
-<div class="gift-guide-container">
+<div class="gift-guide-container" style="position:relative;">
+  <div class="banner-svg-bg">
+    {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Gift Guide Illustration', 'banner-svg' }}
+  </div>
+  <div class="banner-image">
+    {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Banner Illustration', 'banner-svg' }}
+  </div>
   <div class="gift-guide-header">
     <div class="header-logo">{{ section.settings.title }}</div>
     <div class="header-text">{{ section.settings.header_text }}</div>
@@ -298,7 +321,7 @@
     </button>
   </div>
 
-  <div class="main-content">
+  <div class="main-content" style="position:relative;z-index:1;">
     <h1 class="main-heading">{{ section.settings.heading }}</h1>
     <div class="main-description">
       {{ section.settings.description }}
