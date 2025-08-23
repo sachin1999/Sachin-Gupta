@@ -1,303 +1,355 @@
-{% schema %}
-{
-  "name": "Product Grid with Popup",
-  "settings": [
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Section Title",
-      "default": "Tisso vison in the wild"
-    },
-    {
-      "type": "collection",
-      "id": "collection",
-      "label": "Collection"
-    }
-  ],
-  "presets": [
-    {
-      "name": "Product Grid with Popup"
-    }
-  ]
-}
-{% endschema %}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
 
 <style>
-.product-grid {
-  padding: 60px 0;
-  max-width: 1440px;
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
+
+.gift-guide-grid {
+  padding: 4rem 2rem;
+  max-width: 1400px;
   margin: 0 auto;
+  font-family: 'Jost', sans-serif;
 }
 
-.product-grid__title {
-  font-family: 'Jost';
-  font-size: 36px;
-  margin-bottom: 40px;
-  padding: 0 20px;
-}
-
-.product-grid__items {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding: 0 20px;
-}
-
-.product-item {
-  position: relative;
-}
-
-.product-item__image {
-  width: 100%;
-  height: 444px;
-  object-fit: cover;
-}
-
-.quick-view-button {
-  position: absolute;
-  width: 22px;
-  height: 22px;
-  background: rgba(248, 248, 248, 0.9);
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.3s ease;
-}
-
-.quick-view-button::before,
-.quick-view-button::after {
-  content: '';
-  position: absolute;
-  background: #000;
-  border-radius: 1px;
-}
-
-.quick-view-button::before {
-  width: 10px;
-  height: 2px;
-}
-
-.quick-view-button::after {
-  width: 2px;
-  height: 10px;
-}
-
-/* Popup Styles */
-.product-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.product-popup.active {
-  display: flex;
-}
-
-.product-popup__content {
-  background: #fff;
-  padding: 40px;
-  max-width: 600px;
-  width: 90%;
-  position: relative;
-}
-
-.product-popup__close {
-  position: absolute;
-  right: 20px;
-  top: 20px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-}
-
-.product-popup__title {
-  font-family: 'Jost';
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-.product-popup__price {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.product-popup__description {
-  margin-bottom: 30px;
-}
-
-.product-popup__variant-selectors {
-  margin-bottom: 30px;
-}
-
-.variant-selector {
-  margin-bottom: 20px;
-}
-
-.variant-selector__label {
-  display: block;
-  margin-bottom: 10px;
+.gift-guide-grid__title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #000;
   font-weight: 500;
 }
 
-.variant-selector__options {
-  display: flex;
-  gap: 10px;
+.gift-guide-grid__container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
 }
 
-.variant-option {
-  padding: 10px 20px;
-  border: 1px solid #ddd;
+.gift-guide-product {
+  position: relative;
   cursor: pointer;
+  overflow: hidden;
 }
 
-.variant-option.selected {
-  background: #000;
-  color: #fff;
-}
-
-.product-popup__add-to-cart {
+.gift-guide-product__image {
   width: 100%;
-  padding: 15px;
-  background: #000;
-  color: #fff;
+  height: 500px; /* Increased from 400px */
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gift-guide-product:hover .gift-guide-product__image {
+  transform: scale(1.05);
+}
+
+.gift-guide-product__quick-add {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  width: 40px; /* Increased from 30px */
+  height: 40px; /* Increased from 30px */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.gift-guide-product:hover .gift-guide-product__quick-add {
+  opacity: 1;
+  visibility: visible;
+}
+
+.gift-guide-product__quick-add:hover {
+  background: #FFF544;
+  transform: scale(1.1);
+}
+
+.gift-guide-product__quick-add svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.gift-guide-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.gift-guide-popup.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+.gift-guide-popup__content {
+  position: relative;
+  width: 400px; /* Increased from 311px */
+  max-height: 80vh;
+  background: #FFFFFF;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border: 0.5px solid #000000;
+  padding: 30px;
+  overflow-y: auto;
+  font-family: 'Jost', sans-serif;
+  border-radius: 8px;
+}
+
+.gift-guide-popup__close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
   border: none;
   cursor: pointer;
-  font-family: 'Jost';
+  font-size: 24px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.gift-guide-popup__close:hover {
+  background: #f0f0f0;
+}
+
+.gift-guide-popup__title {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #000;
+  font-weight: 500;
+  padding-right: 40px;
+}
+
+.gift-guide-popup__price {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #000;
+  font-weight: 500;
+}
+
+.gift-guide-popup__description {
+  margin-bottom: 25px;
+  line-height: 1.5;
+  color: #666;
+}
+
+.gift-guide-popup__variants {
+  margin-bottom: 25px;
+}
+
+.gift-guide-popup__variant-label {
+  font-size: 14px;
+  color: #333333;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.gift-guide-popup__variant-select {
+  width: 100%;
+  border: 0.5px solid #000000;
+  font-size: 16px;
+  font-family: 'Jost', sans-serif;
+  color: #000;
+  margin-bottom: 16px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.gift-guide-popup__variant-select:focus {
+  outline: none;
+  border-color: #FFF544;
+}
+
+.gift-guide-popup__add-to-cart {
+  width: 100%;
+  height: 50px;
+  background: #000000;
+  color: #fff;
+  border: none;
+  font-family: 'Jost', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
   text-transform: uppercase;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.product-popup__add-to-cart::after {
-  content: "→";
+.gift-guide-popup__add-to-cart:hover {
+  background: #FFF544;
+  color: #000;
+}
+
+.gift-guide-popup__add-to-cart:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.gift-guide-popup__add-to-cart svg {
+  width: 16px;
+  height: 16px;
+}
+
+@media screen and (max-width: 968px) {
+  .gift-guide-grid__container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+  
+  .gift-guide-product__image {
+    height: 400px;
+  }
+  
+  .gift-guide-popup__content {
+    width: 90%;
+    max-width: 400px;
+    padding: 25px;
+  }
+}
+
+@media screen and (max-width: 568px) {
+  .gift-guide-grid__container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .gift-guide-grid {
+    padding: 2rem 1rem;
+  }
+  
+  .gift-guide-grid__title {
+    font-size: 1.5rem;
+  }
+  
+  .gift-guide-product__image {
+    height: 350px;
+  }
+  
+  .gift-guide-product__quick-add {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  .gift-guide-popup__content {
+    width: 95%;
+    padding: 20px;
+  }
+  
+  .gift-guide-popup__title {
+    font-size: 20px;
+  }
 }
 </style>
 
-<div class="product-grid">
-  <h2 class="product-grid__title">{{ section.settings.title }}</h2>
-  
-  <div class="product-grid__items">
-    {% for product in section.settings.collection.products limit: 6 %}
-      <div class="product-item" data-product-id="{{ product.id }}">
-        <img 
-          src="{{ product.featured_image | img_url: '433x444', crop: 'center' }}"
-          alt="{{ product.title }}"
-          class="product-item__image"
-          loading="lazy"
-        >
-        <button class="quick-view-button" aria-label="Quick view {{ product.title }}"></button>
-      </div>
-    {% endfor %}
+<div class="gift-guide-grid">
+  <h2 class="gift-guide-grid__title">{{ section.settings.title }}</h2>
+  <div class="gift-guide-grid__container">
+    {%- for block in section.blocks -%}
+      {%- assign product = all_products[block.settings.product] -%}
+      {%- if product -%}
+        <div class="gift-guide-product" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+          <img
+            src="{{ product.featured_image | img_url: '700x700', crop: 'center' }}"
+            alt="{{ product.title }}"
+            class="gift-guide-product__image"
+            loading="lazy"
+          >
+          <button class="gift-guide-product__quick-add" aria-label="Quick view {{ product.title }}">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </button>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
   </div>
 </div>
 
-<div class="product-popup" id="productPopup">
-  <div class="product-popup__content">
-    <button class="product-popup__close">×</button>
-    <h3 class="product-popup__title"></h3>
-    <div class="product-popup__price"></div>
-    <div class="product-popup__description"></div>
-    <div class="product-popup__variant-selectors">
-      <div class="variant-selector" id="colorSelector">
-        <label class="variant-selector__label">Color</label>
-        <div class="variant-selector__options"></div>
-      </div>
-      <div class="variant-selector" id="sizeSelector">
-        <label class="variant-selector__label">Size</label>
-        <div class="variant-selector__options"></div>
-      </div>
-    </div>
-    <button class="product-popup__add-to-cart">ADD TO CART</button>
+<div class="gift-guide-popup" role="dialog" aria-modal="true" id="giftGuidePopup">
+  <div class="gift-guide-popup__content">
+    <button class="gift-guide-popup__close" aria-label="Close">&times;</button>
+    <h3 class="gift-guide-popup__title"></h3>
+    <div class="gift-guide-popup__price"></div>
+    <div class="gift-guide-popup__description"></div>
+    <div class="gift-guide-popup__variants"></div>
+    <button class="gift-guide-popup__add-to-cart">
+      ADD TO CART
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </button>
   </div>
 </div>
 
-{% javascript %}
-document.addEventListener('DOMContentLoaded', function() {
-  const popup = document.getElementById('productPopup');
-  const quickViewButtons = document.querySelectorAll('.quick-view-button');
-  const closeButton = popup.querySelector('.product-popup__close');
-  
-  quickViewButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const productItem = this.closest('.product-item');
-      const productId = productItem.dataset.productId;
-      
-      // Fetch product data
-      fetch(`/products/${productId}.js`)
-        .then(response => response.json())
-        .then(product => {
-          // Populate popup
-          popup.querySelector('.product-popup__title').textContent = product.title;
-          popup.querySelector('.product-popup__price').textContent = `${product.price_min}€`;
-          popup.querySelector('.product-popup__description').textContent = product.description;
-          
-          // Show popup
-          popup.classList.add('active');
-          
-          // Setup variant selectors
-          setupVariantSelectors(product);
-        });
-    });
-  });
-  
-  closeButton.addEventListener('click', function() {
-    popup.classList.remove('active');
-  });
-  
-  function setupVariantSelectors(product) {
-    const colorOptions = new Set();
-    const sizeOptions = new Set();
+<script>
+class GiftGuideProduct {
+  constructor() {
+    this.popup = document.getElementById('giftGuidePopup');
+    this.popupContent = this.popup.querySelector('.gift-guide-popup__content');
+    this.closeButton = this.popup.querySelector('.gift-guide-popup__close');
+    this.addToCartButton = this.popup.querySelector('.gift-guide-popup__add-to-cart');
+    this.currentProduct = null;
+    this.selectedVariant = null;
     
-    product.variants.forEach(variant => {
-      if (variant.option1) colorOptions.add(variant.option1);
-      if (variant.option2) sizeOptions.add(variant.option2);
-    });
-    
-    // Setup color options
-    const colorSelector = document.querySelector('#colorSelector .variant-selector__options');
-    colorSelector.innerHTML = '';
-    colorOptions.forEach(color => {
-      const option = document.createElement('div');
-      option.className = 'variant-option';
-      option.textContent = color;
-      colorSelector.appendChild(option);
-    });
-    
-    // Setup size options
-    const sizeSelector = document.querySelector('#sizeSelector .variant-selector__options');
-    sizeSelector.innerHTML = '';
-    sizeOptions.forEach(size => {
-      const option = document.createElement('div');
-      option.className = 'variant-option';
-      option.textContent = size;
-      sizeSelector.appendChild(option);
-    });
-    
-    // Setup option selection
-    const variantOptions = document.querySelectorAll('.variant-option');
-    variantOptions.forEach(option => {
-      option.addEventListener('click', function() {
-        const siblings = this.parentElement.children;
-        Array.from(siblings).forEach(sib => sib.classList.remove('selected'));
-        this.classList.add('selected');
+    this.init();
+  }
+
+  init() {
+    this.bindEvents();
+  }
+
+  bindEvents() {
+    // Add click events to quick-add buttons
+    document.querySelectorAll('.gift-guide-product__quick-add').forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const productItem = e.target.closest('.gift-guide-product');
+        const productHandle = productItem.dataset.productHandle;
+        
+        this.handleQuickAdd(productHandle);
       });
     });
-  }
-});
-{% endjavascript %}
+
+    // Close popup events
+    this.closeButton.addEventListener('click', () => this.closePopup());
+    
+    this.popup.addEventListener('click', (e) => {
+      if (e.target === this.popup) this.closePopup();
+    });
+    
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.popup.classList.contains('active')) {
+        this.closePopup();
+      }
+    });
