@@ -290,35 +290,40 @@
     }
 
     async handleAddToCart() {
+      // Get selected options from variant dropdowns
       const variantSelects = this.popupContent.querySelectorAll('.gift-guide-popup__variant-select');
-      const selectedOptions = Array.from(variantSelects).map(select => ({
-        name: select.dataset.option,
-        value: select.value
-      }));
+      const selectedOptions = Array.from(variantSelects).map(select => select.value);
 
-      const selectedVariant = this.currentProduct.variants.find(variant => 
-        selectedOptions.every(option => 
-          variant[`option${option.name.match(/\d+/) || 1}`] === option.value
-        )
-      );
-
+      // Find the matching variant
+      let selectedVariant = null;
+      for (const variant of this.currentProduct.variants) {
+        let match = true;
+        for (let i = 0; i < variantSelects.length; i++) {
+          if (variant.options[i] !== selectedOptions[i]) {
+            match = false;
+            break;
+          }
+        }
+        if (match) {
+          selectedVariant = variant;
+          break;
+        }
+      }
       if (!selectedVariant) return;
 
       try {
         await this.addItemToCart(selectedVariant.id, 1);
-        
-        // Check if we need to add the Soft Winter Jacket
-        if (selectedOptions.some(option => 
-          (option.value === 'Black' || option.value === 'Medium')
-        )) {
-          const winterJacket = {{ section.settings.winter_jacket_variant_id }};
-          if (winterJacket) {
-            await this.addItemToCart(winterJacket, 1);
+
+        // Special logic: if Black or Medium is selected, add Soft Winter Jacket
+        if (selectedOptions.includes('Black') || selectedOptions.includes('Medium')) {
+          // Get Soft Winter Jacket variant ID from section settings
+          const winterJacketProduct = {{ section.settings.winter_jacket | json }};
+          if (winterJacketProduct && winterJacketProduct.variants && winterJacketProduct.variants.length > 0) {
+            await this.addItemToCart(winterJacketProduct.variants[0].id, 1);
           }
         }
 
         this.closePopup();
-        // Trigger cart drawer open or notification
         document.dispatchEvent(new CustomEvent('cart:refresh'));
       } catch (error) {
         console.error('Error adding to cart:', error);
