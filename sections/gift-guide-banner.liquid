@@ -308,37 +308,16 @@
 }
 </style>
 
-<div class="gift-guide-container" style="position:relative;">
-  <div class="banner-svg-bg">
-    {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Gift Guide Illustration', 'banner-svg' }}
-  </div>
+<div class="gift-guide-banner" style="background:#F5F5F5;min-height:600px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;">
   <div class="banner-image" style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:32px;">
     {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Banner Illustration', 'banner-svg' }}
   </div>
-  <div class="gift-guide-header">
-    <div class="header-logo">{{ section.settings.title }}</div>
-    <div class="header-text">{{ section.settings.header_text }}</div>
-    <button class="choose-gift-button">
-      <div class="choose-gift-button__bg"></div>
-      <div class="choose-gift-button__line"></div>
-      <span class="choose-gift-button__text">CHOOSE GIFT</span>
-    </button>
-  </div>
-
-  <div class="main-content" style="position:relative;z-index:1;">
-    <h1 class="main-heading">{{ section.settings.heading }}</h1>
-    <div class="main-description">
-      {{ section.settings.description }}
-    </div>
-    <button class="shop-now-button">
-      <div class="shop-now-button__line"></div>
-      <span class="shop-now-button__text">{{ section.settings.button_text }}</span>
-    </button>
-  </div>
-
-  <div class="footer-banner">
-    <div class="footer-text">
-      {{ section.settings.footer_text }}
-    </div>
+  <h1 class="gift-guide-title" style="font-size:3rem;font-weight:600;text-align:center;margin-bottom:16px;">{{ section.settings.heading }}</h1>
+  <div class="gift-guide-description" style="font-size:1.25rem;text-align:center;margin-bottom:32px;max-width:600px;">{{ section.settings.description }}</div>
+  <button class="shop-now-button" style="background:#000;color:#fff;padding:16px 32px;font-size:1rem;border:none;border-radius:4px;transition:background 0.3s;color 0.3s;cursor:pointer;margin-bottom:32px;">
+    <span class="shop-now-button__text">{{ section.settings.button_text }}</span>
+  </button>
+  <div class="footer-banner" style="width:100%;text-align:center;margin-top:auto;padding:16px 0;background:#fff544;color:#000;font-size:1rem;">
+    {{ section.settings.footer_text }}
   </div>
 </div>
