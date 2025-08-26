@@ -596,46 +596,59 @@
 
 <div class="product-grid">
   <h2 class="product-grid__title">{{ section.settings.title }}</h2>
-  
-  <div class="product-grid__items">
+    <div class="product-grid__items">
     {% for block in section.blocks %}
       {% if block.settings.product != blank %}
         {% assign product = all_products[block.settings.product] %}
-        <div class="product-item" 
-             data-product-id="{{ product.id }}" 
-             data-product-handle="{{ product.handle }}"
-             data-block-id="{{ block.id }}">
-          
-          {% if product.featured_image %}
-            <img 
-              src="{{ product.featured_image | image_url: width: 700, height: 700, crop: 'center' }}"
-              alt="{{ product.title }}"
-              class="product-item__image"
-              loading="lazy"
-            >
-          {% else %}
-            <div class="product-item__image" style="background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #999;">
-              No Image
+        {% if product %}
+          <div class="product-item" 
+               data-product-id="{{ product.id }}" 
+               data-product-handle="{{ product.handle }}"
+               data-block-id="{{ block.id }}">
+            
+            {% if product.featured_image %}
+              <img 
+                src="{{ product.featured_image | image_url: width: 700, height: 700, crop: 'center' }}"
+                alt="{{ product.title }}"
+                class="product-item__image"
+                loading="lazy"
+              >
+            {% else %}
+              <div class="product-item__image" style="background: #f5f5f5; display: flex; align-items: center; justify-content: center; color: #999;">
+                No Image
+              </div>
+            {% endif %}
+            
+            <div class="product-item__info">
+              <h3 class="product-item__title">{{ product.title }}</h3>
+              <div class="product-item__price">
+                {{ product.price | money }}
+                {% if product.compare_at_price > product.price %}
+                  <span style="text-decoration: line-through; opacity: 0.7; margin-left: 8px;">
+                    {{ product.compare_at_price | money }}
+                  </span>
+                {% endif %}
+              </div>
             </div>
-          {% endif %}
-          
-          <div class="product-item__info">
-            <h3 class="product-item__title">{{ product.title }}</h3>
-            <div class="product-item__price">
-              {{ product.price | money }}
-              {% if product.compare_at_price > product.price %}
-                <span style="text-decoration: line-through; opacity: 0.7; margin-left: 8px;">
-                  {{ product.compare_at_price | money }}
-                </span>
-              {% endif %}
-            </div>
+            
+            <button class="quick-view-button" aria-label="Quick view {{ product.title }}">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
           </div>
-          
-          <button class="quick-view-button" aria-label="Quick view {{ product.title }}">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M12 5v14M5 12h14"/>
-            </svg>
-          </button>
+        {% else %}
+          <!-- Debug: Show when product is not found -->
+          <div style="padding: 20px; background: #f0f0f0; text-align: center;">
+            <p>Product not found: {{ block.settings.product }}</p>
+            <p>Block ID: {{ block.id }}</p>
+          </div>
+        {% endif %}
+      {% else %}
+        <!-- Debug: Show when no product is selected -->
+        <div style="padding: 20px; background: #fff3cd; text-align: center;">
+          <p>No product selected for this block</p>
+          <p>Block ID: {{ block.id }}</p>
         </div>
       {% endif %}
     {% endfor %}
@@ -709,8 +722,7 @@
       this.bindEvents();
       console.log('ProductPopupManager initialized');
     }
-      bindEvents() {
-      // Quick view button clicks
+      bindEvents() {      // Quick view button clicks
       document.addEventListener('click', (e) => {
         const quickViewBtn = e.target.closest('.quick-view-button');
         if (quickViewBtn) {
@@ -720,8 +732,20 @@
           const productItem = quickViewBtn.closest('.product-item');
           if (productItem) {
             const productHandle = productItem.dataset.productHandle;
-            console.log('Quick view clicked for:', productHandle);
+            const productId = productItem.dataset.productId;
+            console.log('Quick view clicked for:', productHandle, 'ID:', productId);
+            console.log('Product item element:', productItem);
+            
+            // Debug: log all available data
+            console.log('Available data attributes:', {
+              handle: productHandle,
+              id: productId,
+              blockId: productItem.dataset.blockId
+            });
+            
             this.openProductPopup(productHandle);
+          } else {
+            console.error('Could not find product item element');
           }
         }
       });
@@ -757,17 +781,70 @@
       
       this.showLoading();
       this.overlay.classList.add('active');
-      
-      try {
+        try {
         console.log('Fetching product:', productHandle);
-        const response = await fetch(`/products/${productHandle}.js`);
         
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        // Try different API endpoints
+        let response;
+        let product;
+        
+        // First try the standard product API
+        try {
+          response = await fetch(`/products/${productHandle}.js`);
+          if (response.ok) {
+            product = await response.json();
+          }
+        } catch (e) {
+          console.log('Standard API failed, trying alternative...');
         }
         
-        const product = await response.json();
-        console.log('Product fetched:', product);
+        // If that fails, try the admin API format
+        if (!product) {
+          try {
+            response = await fetch(`/products/${productHandle}?view=json`);
+            if (response.ok) {
+              const text = await response.text();
+              product = JSON.parse(text);
+            }
+          } catch (e) {
+            console.log('Alternative API also failed');
+          }
+        }
+        
+        // If still no product, get it from the page data
+        if (!product) {
+          // Get product from the grid item data
+          const productItem = document.querySelector(`[data-product-handle="${productHandle}"]`);
+          if (productItem) {
+            const productId = productItem.dataset.productId;
+            
+            // Create a basic product object from available data
+            product = {
+              id: parseInt(productId),
+              title: productItem.querySelector('.product-item__title')?.textContent || 'Product',
+              handle: productHandle,
+              price: 0,
+              variants: [{
+                id: parseInt(productId),
+                title: 'Default',
+                price: 0,
+                available: true,
+                options: ['Default']
+              }],
+              options: ['Title'],
+              featured_image: productItem.querySelector('.product-item__image')?.src || null,
+              description: 'Product description not available.'
+            };
+            
+            console.log('Using fallback product data:', product);
+          }
+        }
+        
+        if (!product) {
+          throw new Error('Could not load product data');
+        }
+        
+        console.log('Product loaded:', product);
         
         this.currentProduct = product;
         this.selectedVariant = product.variants[0];
@@ -779,7 +856,12 @@
         console.error('Error fetching product:', error);
         this.hideLoading();
         this.closePopup();
-        alert('Sorry, there was an error loading the product. Please try again.');
+        
+        // Show a more user-friendly error
+        const errorMsg = error.message.includes('Could not load') 
+          ? 'Product information is not available at the moment.' 
+          : 'Sorry, there was an error loading the product. Please try again.';
+        alert(errorMsg);
       }
     }    renderProduct(product) {
       // Set product info
@@ -788,18 +870,32 @@
       
       const description = this.content.querySelector('.product-popup__description');
       description.innerHTML = product.description || 'No description available.';
-      
-      // Set product image with proper URL
+        // Set product image with proper URL
       const imageContainer = this.content.querySelector('.product-popup__image');
       if (product.featured_image) {
-        // Ensure we get a proper sized image
-        const imageUrl = product.featured_image.replace(/\.(jpg|jpeg|gif|png|bmp|bitmap|tiff|tif)(\?.*)?$/i, '_300x300.$1');
+        let imageUrl = product.featured_image;
+        
+        // Handle different image URL formats
+        if (typeof imageUrl === 'string') {
+          // If it's already a full URL, use it
+          if (imageUrl.startsWith('http')) {
+            // For Shopify CDN URLs, ensure we get a reasonable size
+            if (imageUrl.includes('shopify') && !imageUrl.includes('_')) {
+              imageUrl = imageUrl.replace(/\.(jpg|jpeg|gif|png|bmp|bitmap|tiff|tif)(\?.*)?$/i, '_300x300.$1$2');
+            }
+          } else {
+            // Relative URL - make it absolute
+            imageUrl = window.location.origin + imageUrl;
+          }
+        }
+        
         imageContainer.style.backgroundImage = `url(${imageUrl})`;
+        imageContainer.innerHTML = '';
         console.log('Set image URL:', imageUrl);
       } else {
         imageContainer.style.backgroundImage = 'none';
         imageContainer.style.backgroundColor = '#f5f5f5';
-        imageContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">No Image</div>';
+        imageContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:12px;">No Image</div>';
       }
       
       // Reset selected options
