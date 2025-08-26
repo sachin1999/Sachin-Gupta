@@ -190,17 +190,16 @@
 }
 
 .product-popup {
-  background: #fff;
-  width: 90%;
-  max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 12px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  background: #FFFFFF;
+  width: 311px;
+  height: 447px;
+  border-radius: 0;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
   font-family: 'Jost', sans-serif;
   position: relative;
   transform: scale(0.8);
   transition: transform 0.3s ease;
+  overflow: visible;
 }
 
 .product-popup-overlay.active .product-popup {
@@ -209,131 +208,239 @@
 
 .product-popup__header {
   position: relative;
-  padding: 30px;
-  border-bottom: 1px solid #eee;
+  padding: 0;
+  border-bottom: none;
+  height: 140px;
 }
 
 .product-popup__close {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: none;
-  border: none;
-  font-size: 28px;
+  top: 12px;
+  right: 12px;
+  background: rgba(248, 248, 248, 0.9);
+  border: 1.5px solid #000000;
+  width: 12px;
+  height: 12px;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 0;
   transition: background 0.3s ease;
-  color: #666;
+  color: #000;
+  font-size: 8px;
+  transform: rotate(45deg);
+}
+
+.product-popup__close::before {
+  content: '+';
+  transform: rotate(0deg);
 }
 
 .product-popup__close:hover {
-  background: #f5f5f5;
-  color: #000;
+  background: #f0f0f0;
+}
+
+.product-popup__image {
+  position: absolute;
+  left: 17px;
+  top: 36px;
+  right: 174px;
+  bottom: 271px;
+  background-size: cover;
+  background-position: center;
 }
 
 .product-popup__title {
-  font-size: 28px;
-  font-weight: 500;
-  margin-bottom: 10px;
-  color: #000;
-  padding-right: 50px;
-  line-height: 1.2;
+  position: absolute;
+  left: 145px;
+  top: 49px;
+  right: 30px;
+  font-family: 'Jost';
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 120%;
+  color: #000000;
+  margin: 0;
+  padding-right: 0;
 }
 
 .product-popup__price {
-  font-size: 22px;
-  font-weight: 500;
-  color: #000;
+  position: absolute;
+  left: 145px;
+  top: 88px;
+  font-family: 'Lustria';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 120%;
+  color: #000000;
 }
 
 .product-popup__body {
-  padding: 30px;
+  padding: 0;
+  position: relative;
+  height: calc(100% - 140px);
 }
 
 .product-popup__description {
-  margin-bottom: 30px;
-  line-height: 1.6;
-  color: #666;
-  font-size: 16px;
+  position: absolute;
+  width: 146px;
+  height: 60px;
+  left: calc(50% - 146px/2 + 62.5px);
+  top: 119px;
+  font-family: 'Jost';
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 110%;
+  letter-spacing: -0.01em;
+  color: #000000;
+  margin: 0;
 }
 
 .product-popup__variants {
-  margin-bottom: 30px;
+  margin: 0;
+  position: absolute;
+  top: 122px;
+  left: 20px;
+  right: 20px;
 }
 
 .variant-group {
   margin-bottom: 20px;
+  position: relative;
 }
 
 .variant-group__label {
-  display: block;
+  font-family: 'Jost';
+  font-weight: 400;
   font-size: 14px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  line-height: 130%;
+  color: #333333;
+  margin: 0 0 8px 0;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
 .variant-group__options {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 0;
+  position: relative;
 }
 
 .variant-option {
-  padding: 12px 20px;
-  border: 2px solid #ddd;
-  background: #fff;
-  color: #333;
+  padding: 0;
+  border: 0.5px solid #000000;
+  background: #FFFFFF;
+  color: #000000;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 14px;
-  font-weight: 500;
-  border-radius: 6px;
-  min-width: 60px;
-  text-align: center;
-}
-
-.variant-option:hover {
-  border-color: #333;
-}
-
-.variant-option.selected {
-  border-color: #000;
-  background: #000;
-  color: #fff;
-}
-
-.variant-option.unavailable {
-  opacity: 0.5;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
-
-.product-popup__add-to-cart {
-  width: 100%;
-  height: 55px;
-  background: #000;
-  color: #fff;
-  border: none;
-  font-family: 'Jost', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 8px;
+  font-family: 'Jost';
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  text-transform: capitalize;
+  border-radius: 0;
+  min-width: auto;
+  text-align: left;
+  height: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  letter-spacing: 0.5px;
+  box-sizing: border-box;
+}
+
+.variant-option:first-child {
+  width: calc(50% - 1px);
+  padding-left: 14px;
+  justify-content: flex-start;
+}
+
+.variant-option:last-child {
+  width: 50%;
+  margin-left: -0.5px;
+  padding-left: 14px;
+  justify-content: flex-start;
+}
+
+.variant-option.selected {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+/* Size selector */
+.size-selector {
+  position: absolute;
+  height: 64px;
+  left: 20px;
+  right: 20px;
+  top: 200px;
+}
+
+.size-selector__dropdown {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  border: 0.5px solid #000000;
+  background: #FFFFFF;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.size-selector__label {
+  font-family: 'Jost';
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 130%;
+  color: #333333;
+  position: absolute;
+  top: -18px;
+  left: 0;
+}
+
+.size-selector__selected {
+  font-family: 'Jost';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: #000000;
+  flex: 1;
+}
+
+.size-selector__arrow {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid #000000;
+  margin-left: 8px;
+}
+
+.product-popup__add-to-cart {
+  position: absolute;
+  width: 271px;
+  height: 45px;
+  left: 20px;
+  bottom: 25px;
+  background: #000000;
+  border: none;
+  font-family: 'Jost';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
 }
 
 .product-popup__add-to-cart:hover {
@@ -493,11 +600,11 @@
     <div class="product-popup__loading" id="popupLoading">
       Loading product...
     </div>
-    
-    <!-- Product Content -->
+      <!-- Product Content -->
     <div class="product-popup__content" id="popupContent" style="display: none;">
       <div class="product-popup__header">
-        <button class="product-popup__close" aria-label="Close popup">&times;</button>
+        <button class="product-popup__close" aria-label="Close popup"></button>
+        <div class="product-popup__image"></div>
         <h3 class="product-popup__title"></h3>
         <div class="product-popup__price"></div>
       </div>
@@ -505,6 +612,13 @@
       <div class="product-popup__body">
         <div class="product-popup__description"></div>
         <div class="product-popup__variants" id="popupVariants"></div>
+        <div class="size-selector">
+          <label class="size-selector__label">Size</label>
+          <div class="size-selector__dropdown">
+            <span class="size-selector__selected">Choose your size</span>
+            <div class="size-selector__arrow"></div>
+          </div>
+        </div>
         <button class="product-popup__add-to-cart">
           ADD TO CART
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -613,14 +727,19 @@
         alert('Sorry, there was an error loading the product. Please try again.');
       }
     }
-    
-    renderProduct(product) {
+      renderProduct(product) {
       // Set product info
       this.content.querySelector('.product-popup__title').textContent = product.title;
       this.content.querySelector('.product-popup__price').textContent = this.formatMoney(product.price);
       
       const description = this.content.querySelector('.product-popup__description');
       description.innerHTML = product.description || 'No description available.';
+      
+      // Set product image
+      const imageContainer = this.content.querySelector('.product-popup__image');
+      if (product.featured_image) {
+        imageContainer.style.backgroundImage = `url(${product.featured_image})`;
+      }
       
       // Render variants
       this.renderVariants(product);
