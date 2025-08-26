@@ -135,27 +135,21 @@
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-start;
-  padding: 0 0 160px 67px; /* bottom space for text */
+  padding: 0 67px;
   max-width: 1600px; /* optional cap */
   margin: 0 auto;
   z-index: 2;
 }
 
 .text-content {
-  position: relative; /* no absolute, relies on flex alignment */
+  position: relative;
   left: auto;
   bottom: auto;
   max-width: 500px;
   z-index: 3;
-}
-
-/* Shift text downward on larger screens */
-@media screen and (min-width: 969px) {
-  .text-content {
-    margin-top: 60px;
-  }
+  margin-top: 120px; /* Push text down from center */
 }
 
 .gift-guide-title {
@@ -255,6 +249,11 @@
   
   .text-content {
     left: auto;
+    margin-top: 100px;
+  }
+  
+  .gift-guide-title {
+    font-size: 60px;
   }
 }
 
@@ -287,10 +286,10 @@
     align-items: center;
     padding: 80px 20px 60px;
   }
-  
-  .text-content {
+    .text-content {
     text-align: center;
     padding: 0;
+    margin-top: 0; /* Reset margin for mobile */
   }
   
   .gift-guide-title {
