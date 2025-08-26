@@ -33,6 +33,11 @@
       "default": "SHOP NOW"
     },
     {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner Image"
+    },
+    {
       "type": "text",
       "id": "footer_text",
       "label": "Footer Text",
@@ -54,9 +59,10 @@
 .gift-guide-wrapper {
   font-family: 'Jost', sans-serif;
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
+  /* removed max-width for full bleed */
+  margin: 0;
   background: #FFFFFF;
+  overflow: hidden;
 }
 
 /* Header Section */
@@ -116,11 +122,12 @@
 .main-content {
   position: relative;
   width: 100%;
-  height: 780px;
+  min-height: 780px;
+  height: 80vh; /* responsive height */
   background: #FFFFFF;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: flex-start;
 }
 
 .content-container {
@@ -128,17 +135,20 @@
   width: 100%;
   height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 67px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0 0 160px 67px; /* bottom space for text */
+  max-width: 1600px; /* optional cap */
+  margin: 0 auto;
+  z-index: 2;
 }
 
 .text-content {
-  position: absolute;
-  left: 67px;
-  bottom: 160px;
+  position: relative; /* no absolute, relies on flex alignment */
+  left: auto;
+  bottom: auto;
   max-width: 500px;
-  z-index: 2;
+  z-index: 3;
 }
 
 .gift-guide-title {
@@ -185,18 +195,20 @@
 
 .banner-image-container {
   position: absolute;
-  right: 50px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 600px;
-  height: 500px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 1;
 }
 
 .banner-svg {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover; /* fill entire area */
+  object-position: center; /* center focus */
+  display: block;
+  pointer-events: none;
+  user-select: none;
 }
 
 /* Footer Section */
@@ -235,17 +247,7 @@
   }
   
   .text-content {
-    left: 40px;
-  }
-  
-  .banner-image-container {
-    right: 40px;
-    width: 500px;
-    height: 400px;
-  }
-  
-  .gift-guide-title {
-    font-size: 60px;
+    left: auto;
   }
 }
 
@@ -271,34 +273,17 @@
   .main-content {
     height: auto;
     min-height: 600px;
-    flex-direction: column;
-    padding: 40px 20px;
   }
   
   .content-container {
     flex-direction: column;
-    padding: 0;
+    align-items: center;
+    padding: 80px 20px 60px;
   }
   
   .text-content {
-    position: relative;
-    left: auto;
-    bottom: auto;
     text-align: center;
-    max-width: 100%;
-    order: 2;
-    margin-top: 40px;
-  }
-  
-  .banner-image-container {
-    position: relative;
-    right: auto;
-    top: auto;
-    transform: none;
-    width: 100%;
-    max-width: 400px;
-    height: 300px;
-    order: 1;
+    padding: 0;
   }
   
   .gift-guide-title {
@@ -340,6 +325,10 @@
     padding: 30px 15px;
   }
   
+  .content-container {
+    padding: 60px 15px 40px;
+  }
+  
   .gift-guide-title {
     font-size: 36px;
     margin-bottom: 20px;
@@ -374,13 +363,20 @@
     <button class="choose-gift-button">
       CHOOSE GIFT
       <svg class="arrow-icon" viewBox="0 0 24 24">
-        <path d="M5 12h14M12 5l7 7-7 7"/>
+        <path d="M5 12h14M12 5l7 7-7 7" />
       </svg>
     </button>
   </div>
 
   <!-- Main Content Section -->
   <div class="main-content">
+    <div class="banner-image-container">
+      {% if section.settings.banner_image %}
+        {{ section.settings.banner_image | image_url: width: 3000 | image_tag: alt: section.settings.heading, class: 'banner-svg' }}
+      {% else %}
+        {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Gift Guide Illustration', 'banner-svg' }}
+      {% endif %}
+    </div>
     <div class="content-container">
       <div class="text-content">
         <h1 class="gift-guide-title">{{ section.settings.heading }}</h1>
@@ -388,13 +384,9 @@
         <button class="shop-now-button">
           {{ section.settings.button_text }}
           <svg class="arrow-icon" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7"/>
+            <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
-      </div>
-      
-      <div class="banner-image-container">
-        {{ 'gift-guide-illustration.svg' | asset_url | img_tag: 'Gift Guide Illustration', 'banner-svg' }}
       </div>
     </div>
   </div>
