@@ -245,10 +245,12 @@
   position: absolute;
   left: 17px;
   top: 36px;
-  right: 174px;
-  bottom: 271px;
+  width: 120px;
+  height: 140px;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+  border: 1px solid #eee;
 }
 
 .product-popup__title {
@@ -388,6 +390,53 @@
   align-items: center;
   padding: 0 16px;
   box-sizing: border-box;
+}
+
+.size-selector__dropdown.open .size-selector__arrow {
+  transform: rotate(180deg);
+}
+
+.size-selector__options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 0.5px solid #000000;
+  border-top: none;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+}
+
+.size-selector__options.show {
+  display: block;
+}
+
+.size-selector__option {
+  padding: 12px 16px;
+  font-family: 'Jost';
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: -0.02em;
+  color: #000000;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.size-selector__option:hover {
+  background: #f5f5f5;
+}
+
+.size-selector__option:disabled {
+  color: #ccc;
+  cursor: not-allowed;
 }
 
 .size-selector__label {
@@ -611,12 +660,14 @@
       
       <div class="product-popup__body">
         <div class="product-popup__description"></div>
-        <div class="product-popup__variants" id="popupVariants"></div>
-        <div class="size-selector">
+        <div class="product-popup__variants" id="popupVariants"></div>        <div class="size-selector">
           <label class="size-selector__label">Size</label>
-          <div class="size-selector__dropdown">
+          <div class="size-selector__dropdown" id="sizeDropdown">
             <span class="size-selector__selected">Choose your size</span>
             <div class="size-selector__arrow"></div>
+            <div class="size-selector__options" id="sizeOptions">
+              <!-- Size options will be populated here -->
+            </div>
           </div>
         </div>
         <button class="product-popup__add-to-cart">
@@ -633,8 +684,7 @@
 <script>
 (function() {
   'use strict';
-  
-  class ProductPopupManager {
+    class ProductPopupManager {
     constructor() {
       this.overlay = document.getElementById('productPopupOverlay');
       this.popup = this.overlay.querySelector('.product-popup');
@@ -643,9 +693,13 @@
       this.closeBtn = this.overlay.querySelector('.product-popup__close');
       this.addToCartBtn = this.overlay.querySelector('.product-popup__add-to-cart');
       this.variantsContainer = document.getElementById('popupVariants');
+      this.sizeDropdown = null;
+      this.sizeOptions = null;
+      this.sizeSelected = null;
       
       this.currentProduct = null;
       this.selectedVariant = null;
+      this.selectedOptions = {};
       this.winterJacketProduct = {{ section.settings.winter_jacket | json }};
       
       this.init();
@@ -655,8 +709,7 @@
       this.bindEvents();
       console.log('ProductPopupManager initialized');
     }
-    
-    bindEvents() {
+      bindEvents() {
       // Quick view button clicks
       document.addEventListener('click', (e) => {
         const quickViewBtn = e.target.closest('.quick-view-button');
@@ -692,6 +745,8 @@
       
       // Add to cart
       this.addToCartBtn.addEventListener('click', () => this.handleAddToCart());
+      
+      // Size dropdown functionality will be set up when popup opens
     }
     
     async openProductPopup(productHandle) {
@@ -726,8 +781,7 @@
         this.closePopup();
         alert('Sorry, there was an error loading the product. Please try again.');
       }
-    }
-      renderProduct(product) {
+    }    renderProduct(product) {
       // Set product info
       this.content.querySelector('.product-popup__title').textContent = product.title;
       this.content.querySelector('.product-popup__price').textContent = this.formatMoney(product.price);
@@ -735,20 +789,32 @@
       const description = this.content.querySelector('.product-popup__description');
       description.innerHTML = product.description || 'No description available.';
       
-      // Set product image
+      // Set product image with proper URL
       const imageContainer = this.content.querySelector('.product-popup__image');
       if (product.featured_image) {
-        imageContainer.style.backgroundImage = `url(${product.featured_image})`;
+        // Ensure we get a proper sized image
+        const imageUrl = product.featured_image.replace(/\.(jpg|jpeg|gif|png|bmp|bitmap|tiff|tif)(\?.*)?$/i, '_300x300.$1');
+        imageContainer.style.backgroundImage = `url(${imageUrl})`;
+        console.log('Set image URL:', imageUrl);
+      } else {
+        imageContainer.style.backgroundImage = 'none';
+        imageContainer.style.backgroundColor = '#f5f5f5';
+        imageContainer.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">No Image</div>';
       }
+      
+      // Reset selected options
+      this.selectedOptions = {};
       
       // Render variants
       this.renderVariants(product);
       
+      // Set up size dropdown
+      this.setupSizeDropdown();
+      
       // Update add to cart button
       this.updateAddToCartButton();
     }
-    
-    renderVariants(product) {
+      renderVariants(product) {
       this.variantsContainer.innerHTML = '';
       
       if (!product.variants || product.variants.length <= 1) {
@@ -759,12 +825,15 @@
       console.log('Rendering variants for:', product.title);
       console.log('Product options:', product.options);
       
-      // Group variants by options
+      // Group variants by options (excluding Size since we handle it separately)
       const optionGroups = {};
       
       product.variants.forEach(variant => {
         variant.options.forEach((option, index) => {
           const optionName = product.options[index];
+          // Skip size option as it will be handled by the dropdown
+          if (optionName.toLowerCase() === 'size') return;
+          
           if (!optionGroups[optionName]) {
             optionGroups[optionName] = new Set();
           }
@@ -772,7 +841,7 @@
         });
       });
       
-      // Create option selectors
+      // Create option selectors (for color, etc.)
       Object.entries(optionGroups).forEach(([optionName, values]) => {
         const group = document.createElement('div');
         group.className = 'variant-group';
@@ -800,6 +869,7 @@
         // Select first option by default
         if (options.firstElementChild) {
           options.firstElementChild.classList.add('selected');
+          this.selectedOptions[optionName] = options.firstElementChild.dataset.value;
         }
         
         group.appendChild(label);
@@ -811,7 +881,84 @@
       this.updateSelectedVariant();
     }
     
-    selectOption(optionName, value, clickedElement) {
+    setupSizeDropdown() {
+      this.sizeDropdown = document.getElementById('sizeDropdown');
+      this.sizeOptions = document.getElementById('sizeOptions');
+      this.sizeSelected = this.sizeDropdown.querySelector('.size-selector__selected');
+      
+      if (!this.sizeDropdown || !this.currentProduct) return;
+      
+      // Get size options from product
+      const sizeOptionIndex = this.currentProduct.options.findIndex(option => 
+        option.toLowerCase() === 'size'
+      );
+      
+      if (sizeOptionIndex === -1) {
+        // No size option available, hide size selector
+        const sizeSelector = this.sizeDropdown.closest('.size-selector');
+        sizeSelector.style.display = 'none';
+        return;
+      }
+      
+      // Show size selector
+      const sizeSelector = this.sizeDropdown.closest('.size-selector');
+      sizeSelector.style.display = 'block';
+      
+      // Get unique size values
+      const sizes = new Set();
+      this.currentProduct.variants.forEach(variant => {
+        if (variant.options[sizeOptionIndex]) {
+          sizes.add(variant.options[sizeOptionIndex]);
+        }
+      });
+      
+      // Populate dropdown options
+      this.sizeOptions.innerHTML = '';
+      sizes.forEach(size => {
+        const option = document.createElement('button');
+        option.className = 'size-selector__option';
+        option.textContent = size;
+        option.dataset.value = size;
+        option.type = 'button';
+        
+        option.addEventListener('click', () => this.selectSize(size));
+        
+        this.sizeOptions.appendChild(option);
+      });
+      
+      // Set up dropdown toggle
+      this.sizeDropdown.addEventListener('click', (e) => {
+        if (e.target.closest('.size-selector__option')) return;
+        
+        this.sizeDropdown.classList.toggle('open');
+        this.sizeOptions.classList.toggle('show');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!this.sizeDropdown.contains(e.target)) {
+          this.sizeDropdown.classList.remove('open');
+          this.sizeOptions.classList.remove('show');
+        }
+      });
+      
+      // Reset selection
+      this.sizeSelected.textContent = 'Choose your size';
+      this.selectedOptions.Size = null;
+    }
+    
+    selectSize(size) {
+      this.sizeSelected.textContent = size;
+      this.selectedOptions.Size = size;
+      
+      // Close dropdown
+      this.sizeDropdown.classList.remove('open');
+      this.sizeOptions.classList.remove('show');
+      
+      // Update selected variant
+      this.updateSelectedVariant();
+    }
+      selectOption(optionName, value, clickedElement) {
       // Remove selected class from siblings
       const siblings = clickedElement.parentElement.querySelectorAll('.variant-option');
       siblings.forEach(sibling => sibling.classList.remove('selected'));
@@ -819,35 +966,37 @@
       // Add selected class to clicked option
       clickedElement.classList.add('selected');
       
+      // Update selected options
+      this.selectedOptions[optionName] = value;
+      
       // Update selected variant
       this.updateSelectedVariant();
     }
-    
-    updateSelectedVariant() {
+      updateSelectedVariant() {
       if (!this.currentProduct || !this.currentProduct.variants) return;
       
-      // Get selected options
-      const selectedOptions = [];
-      const optionGroups = this.variantsContainer.querySelectorAll('.variant-group__options');
+      console.log('Selected options:', this.selectedOptions);
       
-      optionGroups.forEach(group => {
-        const selected = group.querySelector('.variant-option.selected');
-        if (selected) {
-          selectedOptions.push(selected.dataset.value);
-        }
+      // Build selected options array in the correct order
+      const selectedOptionsArray = [];
+      this.currentProduct.options.forEach(optionName => {
+        const value = this.selectedOptions[optionName] || this.selectedOptions[optionName.toLowerCase()];
+        selectedOptionsArray.push(value || null);
       });
       
-      console.log('Selected options:', selectedOptions);
+      console.log('Selected options array:', selectedOptionsArray);
       
       // Find matching variant
       this.selectedVariant = this.currentProduct.variants.find(variant => {
         return variant.options.every((option, index) => {
-          return selectedOptions.length === 0 || selectedOptions[index] === option;
+          const selectedValue = selectedOptionsArray[index];
+          return selectedValue === null || selectedValue === option;
         });
       });
       
       if (!this.selectedVariant) {
         this.selectedVariant = this.currentProduct.variants[0];
+        console.log('No matching variant found, using first variant');
       }
       
       console.log('Selected variant:', this.selectedVariant);
@@ -890,14 +1039,10 @@
         
         // Add main product
         await this.addToCart(this.selectedVariant.id, 1);
+          // Check for winter jacket auto-add logic
+        const selectedValues = Object.values(this.selectedOptions);
         
-        // Check for winter jacket auto-add logic
-        const selectedOptions = [];
-        this.variantsContainer.querySelectorAll('.variant-option.selected').forEach(option => {
-          selectedOptions.push(option.dataset.value);
-        });
-        
-        if ((selectedOptions.includes('Black') || selectedOptions.includes('Medium')) && this.winterJacketProduct) {
+        if ((selectedValues.includes('Black') || selectedValues.includes('Medium')) && this.winterJacketProduct) {
           console.log('Auto-adding winter jacket');
           if (this.winterJacketProduct.variants && this.winterJacketProduct.variants.length > 0) {
             await this.addToCart(this.winterJacketProduct.variants[0].id, 1);
@@ -954,8 +1099,7 @@
       this.loading.classList.remove('active');
       this.content.style.display = 'block';
     }
-    
-    closePopup() {
+      closePopup() {
       this.overlay.classList.remove('active');
       document.body.style.overflow = '';
       
@@ -965,6 +1109,18 @@
           this.variantsContainer.innerHTML = '';
           this.currentProduct = null;
           this.selectedVariant = null;
+          this.selectedOptions = {};
+          
+          // Reset size dropdown
+          if (this.sizeDropdown) {
+            this.sizeDropdown.classList.remove('open');
+          }
+          if (this.sizeOptions) {
+            this.sizeOptions.classList.remove('show');
+          }
+          if (this.sizeSelected) {
+            this.sizeSelected.textContent = 'Choose your size';
+          }
         }
       }, 300);
     }
