@@ -16,9 +16,77 @@
         "padding_top": 28,
         "padding_bottom": 28
       }
+    },
+    "gift_guide_banner_NCfgKn": {
+      "type": "gift-guide-banner",
+      "name": "Gift Guide Banner",
+      "settings": {
+        "title": "TISSO VISION",
+        "header_text": "Find the ideal gift for your loved ones.",
+        "heading": "The Gift Guide",
+        "description": "<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>",
+        "button_text": "SHOP NOW",
+        "footer_text": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL"
+      }
+    },
+    "gift_guide_grid_pKNHyr": {
+      "type": "gift-guide-grid",
+      "blocks": {
+        "product_DYcc7f": {
+          "type": "product",
+          "settings": {
+            "product": "black-leather-bag"
+          }
+        },
+        "product_TKFzfy": {
+          "type": "product",
+          "settings": {
+            "product": "blue-silk-tuxedo"
+          }
+        },
+        "product_Lxy9Bf": {
+          "type": "product",
+          "settings": {
+            "product": "chequered-red-shirt"
+          }
+        },
+        "product_zKFnbp": {
+          "type": "product",
+          "settings": {
+            "product": "classic-leather-jacket"
+          }
+        },
+        "product_rKNMGd": {
+          "type": "product",
+          "settings": {
+            "product": "classic-varsity-top"
+          }
+        },
+        "product_zhHHNz": {
+          "type": "product",
+          "settings": {
+            "product": "dark-denim-top"
+          }
+        }
+      },
+      "block_order": [
+        "product_DYcc7f",
+        "product_TKFzfy",
+        "product_Lxy9Bf",
+        "product_zKFnbp",
+        "product_rKNMGd",
+        "product_zhHHNz"
+      ],
+      "name": "Product Grid with Popup",
+      "settings": {
+        "title": "Tisso vision in the wild",
+        "winter_jacket": ""
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "gift_guide_banner_NCfgKn",
+    "gift_guide_grid_pKNHyr"
   ]
 }
