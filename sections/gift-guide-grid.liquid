@@ -200,6 +200,7 @@
   transform: scale(0.8);
   transition: transform 0.3s ease;
   overflow: visible;
+  z-index: 1000;
 }
 
 .product-popup-overlay.active .product-popup {
@@ -312,18 +313,113 @@
 }
 
 /* Added size dropdown list styles */
-.size-selector { position: absolute; height: 64px; left: 17px; right: 174px; top: 250px; }
-.size-selector.open .size-selector__dropdown { border-bottom-color: transparent; }
-.size-selector__dropdown { position: relative; width: 100%; height: 40px; border: 0.5px solid #000000; background: #FFFFFF; cursor: pointer; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; }
-.size-selector__label { font-family: 'Jost'; font-weight: 400; font-size: 14px; line-height: 130%; color: #333333; position: absolute; top: -18px; left: 0; }
-.size-selector__selected { font-family: 'Jost'; font-weight: 400; font-size: 16px; line-height: 100%; letter-spacing: -0.02em; color: #000000; flex: 1; }
-.size-selector__arrow { width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 6px solid #000000; margin-left: 8px; transition: transform .2s; }
-.size-selector.open .size-selector__arrow { transform: rotate(180deg); }
-.size-selector__list { position: absolute; left: 0; top: 40px; width: 100%; background: #FFFFFF; border: 0.5px solid #000; box-sizing: border-box; max-height: 182px; overflow-y: auto; display: none; z-index: 2; }
-.size-selector.open .size-selector__list { display: block; }
-.size-selector__item { width: 100%; height: 36px; background: #FFFFFF; color: #000; font-family: 'Jost'; font-weight: 400; font-size: 16px; line-height: 100%; letter-spacing: -0.02em; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; padding: 0; }
-.size-selector__item + .size-selector__item { border-top: 0.5px solid #000; }
-.size-selector__item.selected { background: #000; color: #FFF; }
+.size-selector { 
+  position: absolute; 
+  height: auto; 
+  left: 17px; 
+  right: 174px; 
+  top: 250px; 
+  z-index: 10;
+}
+.size-selector.open .size-selector__dropdown { 
+  border-bottom-color: transparent; 
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.size-selector__dropdown { 
+  position: relative; 
+  width: 100%; 
+  height: 40px; 
+  border: 0.5px solid #000000; 
+  background: #FFFFFF; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  padding: 0 12px; 
+  box-sizing: border-box;
+  border-radius: 0;
+}
+.size-selector__label { 
+  font-family: 'Jost'; 
+  font-weight: 400; 
+  font-size: 14px; 
+  line-height: 130%; 
+  color: #333333; 
+  position: absolute; 
+  top: -18px; 
+  left: 0; 
+}
+.size-selector__selected { 
+  font-family: 'Jost'; 
+  font-weight: 400; 
+  font-size: 16px; 
+  line-height: 100%; 
+  letter-spacing: -0.02em; 
+  color: #000000; 
+  flex: 1; 
+}
+.size-selector__arrow { 
+  width: 0; 
+  height: 0; 
+  border-left: 4px solid transparent; 
+  border-right: 4px solid transparent; 
+  border-top: 6px solid #000000; 
+  margin-left: 8px; 
+  transition: transform .2s; 
+}
+.size-selector.open .size-selector__arrow { 
+  transform: rotate(180deg); 
+}
+.size-selector__list { 
+  position: absolute; 
+  left: 0; 
+  top: 39px; 
+  width: 100%; 
+  background: #FFFFFF; 
+  border: 0.5px solid #000; 
+  border-top: none;
+  box-sizing: border-box; 
+  max-height: 160px; 
+  overflow-y: auto; 
+  display: none; 
+  z-index: 100;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.size-selector.open .size-selector__list { 
+  display: block; 
+}
+.size-selector__item { 
+  width: 100%; 
+  height: 36px; 
+  background: #FFFFFF; 
+  color: #000; 
+  font-family: 'Jost'; 
+  font-weight: 400; 
+  font-size: 16px; 
+  line-height: 100%; 
+  letter-spacing: -0.02em; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  border: none; 
+  cursor: pointer; 
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+.size-selector__item:hover {
+  background: #f5f5f5;
+}
+.size-selector__item + .size-selector__item { 
+  border-top: 0.5px solid #000; 
+}
+.size-selector__item.selected { 
+  background: #000; 
+  color: #FFF; 
+}
+.size-selector__item.selected:hover { 
+  background: #000; 
+}
 
 .variant-group__label {
   font-family: 'Jost';
@@ -386,10 +482,11 @@
 /* Size selector */
 .size-selector {
   position: absolute;
-  height: 64px;
+  height: auto;
   left: 17px;
   right: 174px;
   top: 250px;
+  z-index: 10;
 }
 
 .size-selector__dropdown {
@@ -401,8 +498,9 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 12px;
   box-sizing: border-box;
+  border-radius: 0;
 }
 
 .size-selector__label {
@@ -767,11 +865,12 @@
       // Hide description to match Figma design
       const description = this.content.querySelector('.product-popup__description');
       description.style.display = 'none';
-      
-      // Set product image
+        // Set product image
       const imageContainer = this.content.querySelector('.product-popup__image');
       if (product.featured_image) {
         imageContainer.style.backgroundImage = `url(${product.featured_image})`;
+      } else if (product.images && product.images.length > 0) {
+        imageContainer.style.backgroundImage = `url(${product.images[0]})`;
       }
       
       // Render variants
@@ -801,14 +900,18 @@
         this.sizeOptionName = this.sizeOptionName.name;
       }
       
-      console.log('Size option name found:', this.sizeOptionName);
-        // Group variants by options excluding size (handled separately)
+      console.log('Size option name found:', this.sizeOptionName);        // Group variants by options excluding size (handled separately)
       const optionGroups = {};
-      product.variants.forEach(variant => {
+      console.log('All product variants:', product.variants);
+      
+      product.variants.forEach((variant, variantIndex) => {
+        console.log(`Variant ${variantIndex}:`, variant.options);
         variant.options.forEach((option, index) => {
           const optionName = product.options[index];
           // Get the actual option name string
           const actualOptionName = typeof optionName === 'object' && optionName.name ? optionName.name : optionName;
+          
+          console.log(`Option ${index}: name="${actualOptionName}", value="${option}"`);
           
           // Skip size option as it will be handled by dropdown
           if (this.sizeOptionName && actualOptionName.toLowerCase() === 'size') {
@@ -819,10 +922,12 @@
           optionGroups[actualOptionName].add(option);
         });
       });
+        console.log('Option groups (excluding size):', optionGroups);
       
-      console.log('Option groups (excluding size):', optionGroups);
-      
+      // Only create variant groups if there are non-size options
       Object.entries(optionGroups).forEach(([optionName, values]) => {
+        if (values.size === 0) return; // Skip empty option groups
+        
         const group = document.createElement('div');
         group.className = 'variant-group';
         const label = document.createElement('label');
@@ -831,7 +936,9 @@
         const options = document.createElement('div');
         options.className = 'variant-group__options';
         options.dataset.optionName = optionName;
-        values.forEach(value => {
+        
+        // Convert Set to Array and create buttons
+        Array.from(values).forEach((value, index) => {
           const option = document.createElement('button');
           option.className = 'variant-option';
           option.textContent = value;
@@ -839,8 +946,13 @@
           option.type = 'button';
           option.addEventListener('click', () => this.selectOption(optionName, value, option));
           options.appendChild(option);
+          
+          // Select first option by default
+          if (index === 0) {
+            option.classList.add('selected');
+          }
         });
-        if (options.firstElementChild) options.firstElementChild.classList.add('selected');
+        
         group.appendChild(label);
         group.appendChild(options);
         this.variantsContainer.appendChild(group);
@@ -897,20 +1009,16 @@
         }
       });
       this.updateSelectedVariant();
-    }
-
-    toggleSizeDropdown() {
+    }    toggleSizeDropdown() {
       if (this.sizeSelector.classList.contains('open')) {
         this.closeSizeDropdown();
       } else {
         this.sizeSelector.classList.add('open');
-        this.sizeList.hidden = false;
+        this.sizeList.style.display = 'block';
       }
-    }
-
-    closeSizeDropdown() {
+    }closeSizeDropdown() {
       this.sizeSelector.classList.remove('open');
-      this.sizeList.hidden = true;
+      this.sizeList.style.display = 'none';
     }
 
     selectSize(value, btn) {
