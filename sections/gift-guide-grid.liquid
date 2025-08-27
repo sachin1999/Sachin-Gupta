@@ -786,23 +786,37 @@
       
       console.log('Product options:', product.options);
       
-      // Determine size option name (case-insensitive)
-      this.sizeOptionName = product.options.find(o => o && typeof o === 'string' && o.toLowerCase() === 'size') || null;
+      // Determine size option name (case-insensitive) - handle both string and object options
+      this.sizeOptionName = product.options.find(o => {
+        if (typeof o === 'string') {
+          return o.toLowerCase() === 'size';
+        } else if (o && typeof o === 'object' && o.name) {
+          return o.name.toLowerCase() === 'size';
+        }
+        return false;
+      });
+      
+      // Extract the actual option name string
+      if (this.sizeOptionName && typeof this.sizeOptionName === 'object') {
+        this.sizeOptionName = this.sizeOptionName.name;
+      }
       
       console.log('Size option name found:', this.sizeOptionName);
-      
-      // Group variants by options excluding size (handled separately)
+        // Group variants by options excluding size (handled separately)
       const optionGroups = {};
       product.variants.forEach(variant => {
         variant.options.forEach((option, index) => {
           const optionName = product.options[index];
+          // Get the actual option name string
+          const actualOptionName = typeof optionName === 'object' && optionName.name ? optionName.name : optionName;
+          
           // Skip size option as it will be handled by dropdown
-          if (this.sizeOptionName && optionName.toLowerCase() === 'size') {
-            console.log('Skipping size option:', optionName);
+          if (this.sizeOptionName && actualOptionName.toLowerCase() === 'size') {
+            console.log('Skipping size option:', actualOptionName);
             return;
           }
-          if (!optionGroups[optionName]) optionGroups[optionName] = new Set();
-          optionGroups[optionName].add(option);
+          if (!optionGroups[actualOptionName]) optionGroups[actualOptionName] = new Set();
+          optionGroups[actualOptionName].add(option);
         });
       });
       
@@ -842,8 +856,23 @@
       }
       
       this.sizeSelector.style.display = '';
-      const sizeIndex = product.options.indexOf(this.sizeOptionName);
+      
+      // Find the index of the size option - handle both string and object options
+      let sizeIndex = -1;
+      product.options.forEach((opt, idx) => {
+        const optName = typeof opt === 'object' && opt.name ? opt.name : opt;
+        if (optName === this.sizeOptionName) {
+          sizeIndex = idx;
+        }
+      });
+      
       console.log('Size index:', sizeIndex);
+      
+      if (sizeIndex === -1) {
+        this.sizeSelector.style.display = 'none';
+        console.log('Size option index not found');
+        return;
+      }
       
       const sizesSet = new Set();
       product.variants.forEach(v => sizesSet.add(v.options[sizeIndex]));
@@ -904,14 +933,16 @@
       // Update selected variant
       this.updateSelectedVariant();
     }
-    
-    updateSelectedVariant() {
+      updateSelectedVariant() {
       if (!this.currentProduct || !this.currentProduct.variants) return;
-      const selectionsByOption = this.currentProduct.options.map(optName => {
-        if (this.sizeOptionName && optName === this.sizeOptionName) {
+      const selectionsByOption = this.currentProduct.options.map((optName, idx) => {
+        // Get the actual option name string
+        const actualOptionName = typeof optName === 'object' && optName.name ? optName.name : optName;
+        
+        if (this.sizeOptionName && actualOptionName === this.sizeOptionName) {
           return this.selectedSize || (this.sizeValues[0] || null);
         }
-        const group = this.variantsContainer.querySelector(`.variant-group__options[data-option-name="${optName}"]`);
+        const group = this.variantsContainer.querySelector(`.variant-group__options[data-option-name="${actualOptionName}"]`);
         const sel = group ? group.querySelector('.variant-option.selected') : null;
         return sel ? sel.dataset.value : null;
       });
