@@ -780,22 +780,34 @@
       this.buildSizeDropdown(product);
       // Update add to cart button
       this.updateAddToCartButton();
-    }
-      renderVariants(product) {
+    }    renderVariants(product) {
       this.variantsContainer.innerHTML = '';
       if (!product || !product.variants) return;
+      
+      console.log('Product options:', product.options);
+      
       // Determine size option name (case-insensitive)
       this.sizeOptionName = product.options.find(o => o && typeof o === 'string' && o.toLowerCase() === 'size') || null;
+      
+      console.log('Size option name found:', this.sizeOptionName);
+      
       // Group variants by options excluding size (handled separately)
       const optionGroups = {};
       product.variants.forEach(variant => {
         variant.options.forEach((option, index) => {
           const optionName = product.options[index];
-          if (this.sizeOptionName && optionName === this.sizeOptionName) return; // skip size here
+          // Skip size option as it will be handled by dropdown
+          if (this.sizeOptionName && optionName.toLowerCase() === 'size') {
+            console.log('Skipping size option:', optionName);
+            return;
+          }
           if (!optionGroups[optionName]) optionGroups[optionName] = new Set();
           optionGroups[optionName].add(option);
         });
       });
+      
+      console.log('Option groups (excluding size):', optionGroups);
+      
       Object.entries(optionGroups).forEach(([optionName, values]) => {
         const group = document.createElement('div');
         group.className = 'variant-group';
@@ -821,15 +833,24 @@
       });
       this.updateSelectedVariant();
     }    buildSizeDropdown(product) {
+      console.log('Building size dropdown, sizeOptionName:', this.sizeOptionName);
+      
       if (!this.sizeOptionName) {
         this.sizeSelector.style.display = 'none';
+        console.log('No size option found, hiding selector');
         return;
       }
+      
       this.sizeSelector.style.display = '';
       const sizeIndex = product.options.indexOf(this.sizeOptionName);
+      console.log('Size index:', sizeIndex);
+      
       const sizesSet = new Set();
       product.variants.forEach(v => sizesSet.add(v.options[sizeIndex]));
       this.sizeValues = Array.from(sizesSet);
+      
+      console.log('Size values:', this.sizeValues);
+      
       this.sizeList.innerHTML = '';
       this.sizeValues.forEach((val, idx) => {
         const btn = document.createElement('button');
@@ -843,6 +864,7 @@
           btn.classList.add('selected');
           this.selectedSize = val;
           this.sizeSelectedText.textContent = val; // Show first size instead of placeholder
+          console.log('Selected first size:', val);
         }
       });
       this.updateSelectedVariant();
