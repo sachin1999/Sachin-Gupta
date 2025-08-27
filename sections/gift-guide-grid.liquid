@@ -723,8 +723,7 @@
         if (!this.sizeSelector.contains(e.target) && this.sizeSelector.classList.contains('open')) {
           this.closeSizeDropdown();
         }
-      });
-    }
+      });    }
     
     async openProductPopup(productHandle) {
       if (!productHandle) {
@@ -759,7 +758,8 @@
         alert('Sorry, there was an error loading the product. Please try again.');
       }
     }
-      renderProduct(product) {
+    
+    renderProduct(product) {
       // Set product info
       this.content.querySelector('.product-popup__title').textContent = product.title;
       this.content.querySelector('.product-popup__price').textContent = this.formatMoney(product.price);
