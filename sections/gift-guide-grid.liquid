@@ -287,7 +287,7 @@
   width: 146px;
   height: 60px;
   left: calc(50% - 146px/2 + 62.5px);
-  top: 119px;
+  top: 150px;
   font-family: 'Jost';
   font-weight: 300;
   font-size: 14px;
@@ -295,12 +295,13 @@
   letter-spacing: -0.01em;
   color: #000000;
   margin: 0;
+  display: none; /* Hide description for now to match Figma */
 }
 
 .product-popup__variants {
   margin: 0;
   position: absolute;
-  top: 122px;
+  top: 145px;
   left: 20px;
   right: 20px;
 }
@@ -311,7 +312,7 @@
 }
 
 /* Added size dropdown list styles */
-.size-selector { position: absolute; height: 64px; left: 20px; right: 20px; top: 200px; }
+.size-selector { position: absolute; height: 64px; left: 20px; right: 20px; top: 185px; }
 .size-selector.open .size-selector__dropdown { border-bottom-color: transparent; }
 .size-selector__dropdown { position: relative; width: 100%; height: 40px; border: 0.5px solid #000000; background: #FFFFFF; cursor: pointer; display: flex; align-items: center; padding: 0 16px; box-sizing: border-box; }
 .size-selector__label { font-family: 'Jost'; font-weight: 400; font-size: 14px; line-height: 130%; color: #333333; position: absolute; top: -18px; left: 0; }
@@ -388,7 +389,7 @@
   height: 64px;
   left: 20px;
   right: 20px;
-  top: 200px;
+  top: 185px;
 }
 
 .size-selector__dropdown {
@@ -758,14 +759,14 @@
         alert('Sorry, there was an error loading the product. Please try again.');
       }
     }
-    
-    renderProduct(product) {
+      renderProduct(product) {
       // Set product info
       this.content.querySelector('.product-popup__title').textContent = product.title;
       this.content.querySelector('.product-popup__price').textContent = this.formatMoney(product.price);
       
+      // Hide description to match Figma design
       const description = this.content.querySelector('.product-popup__description');
-      description.innerHTML = product.description || 'No description available.';
+      description.style.display = 'none';
       
       // Set product image
       const imageContainer = this.content.querySelector('.product-popup__image');
@@ -819,9 +820,7 @@
         this.variantsContainer.appendChild(group);
       });
       this.updateSelectedVariant();
-    }
-
-    buildSizeDropdown(product) {
+    }    buildSizeDropdown(product) {
       if (!this.sizeOptionName) {
         this.sizeSelector.style.display = 'none';
         return;
@@ -843,7 +842,7 @@
         if (idx === 0) {
           btn.classList.add('selected');
           this.selectedSize = val;
-          this.sizeSelectedText.textContent = 'Choose your size'; // keep placeholder until user picks
+          this.sizeSelectedText.textContent = val; // Show first size instead of placeholder
         }
       });
       this.updateSelectedVariant();
