@@ -527,10 +527,11 @@
 .size-selector__arrow {
   width: 0;
   height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 6px solid #000000;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid #000000;
   margin-left: 8px;
+  transition: transform .2s;
 }
 
 .product-popup__add-to-cart {
@@ -730,9 +731,8 @@
           <div class="size-selector__dropdown">
             <span class="size-selector__selected">Choose your size</span>
             <div class="size-selector__arrow"></div>
-          </div>
-          <!-- Added dynamic size list container -->
-          <div class="size-selector__list" hidden></div>
+          </div>          <!-- Added dynamic size list container -->
+          <div class="size-selector__list"></div>
         </div>
         <button class="product-popup__add-to-cart">
           ADD TO CART
@@ -814,9 +814,11 @@
       });
       
       // Add to cart
-      this.addToCartBtn.addEventListener('click', () => this.handleAddToCart());
-      // Size dropdown toggle
-      this.sizeDropdown.addEventListener('click', () => this.toggleSizeDropdown());
+      this.addToCartBtn.addEventListener('click', () => this.handleAddToCart());      // Size dropdown toggle
+      this.sizeDropdown.addEventListener('click', () => {
+        console.log('Size dropdown clicked');
+        this.toggleSizeDropdown();
+      });
       // Close size list when clicking outside
       document.addEventListener('click', (e) => {
         if (!this.sizeSelector.contains(e.target) && this.sizeSelector.classList.contains('open')) {
@@ -864,13 +866,16 @@
       
       // Hide description to match Figma design
       const description = this.content.querySelector('.product-popup__description');
-      description.style.display = 'none';
-        // Set product image
+      description.style.display = 'none';      // Set product image
       const imageContainer = this.content.querySelector('.product-popup__image');
       if (product.featured_image) {
+        console.log('Setting featured image:', product.featured_image);
         imageContainer.style.backgroundImage = `url(${product.featured_image})`;
       } else if (product.images && product.images.length > 0) {
+        console.log('Setting first image:', product.images[0]);
         imageContainer.style.backgroundImage = `url(${product.images[0]})`;
+      } else {
+        console.log('No images found for product');
       }
       
       // Render variants
@@ -1010,9 +1015,11 @@
       });
       this.updateSelectedVariant();
     }    toggleSizeDropdown() {
+      console.log('Toggle size dropdown, currently open:', this.sizeSelector.classList.contains('open'));
       if (this.sizeSelector.classList.contains('open')) {
         this.closeSizeDropdown();
       } else {
+        console.log('Opening size dropdown, size values:', this.sizeValues);
         this.sizeSelector.classList.add('open');
         this.sizeList.style.display = 'block';
       }
