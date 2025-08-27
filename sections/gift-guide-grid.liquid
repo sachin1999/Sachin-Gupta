@@ -780,12 +780,11 @@
       // Update add to cart button
       this.updateAddToCartButton();
     }
-    
-    renderVariants(product) {
+      renderVariants(product) {
       this.variantsContainer.innerHTML = '';
       if (!product || !product.variants) return;
       // Determine size option name (case-insensitive)
-      this.sizeOptionName = product.options.find(o => o.toLowerCase() === 'size') || null;
+      this.sizeOptionName = product.options.find(o => o && typeof o === 'string' && o.toLowerCase() === 'size') || null;
       // Group variants by options excluding size (handled separately)
       const optionGroups = {};
       product.variants.forEach(variant => {
