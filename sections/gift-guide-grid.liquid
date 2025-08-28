@@ -133,20 +133,20 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   background: rgba(255, 255, 255, 0.95);
-  border: none;
+  border: 2px solid #000;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  z-index: 5;
+  z-index: 10;
   opacity: 0;
   visibility: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .product-item:hover .quick-view-button {
@@ -156,14 +156,24 @@
 
 .quick-view-button:hover {
   background: #FFF544;
-  transform: translate(-50%, -50%) scale(1.1);
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+}
+
+.quick-view-button:active {
+  transform: translate(-50%, -50%) scale(1.05);
 }
 
 .quick-view-button svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   stroke: #000;
-  stroke-width: 2;
+  stroke-width: 2.5;
+  transition: stroke 0.2s ease;
+}
+
+.quick-view-button:hover svg {
+  stroke: #000;
 }
 
 /* Popup Styles */
@@ -173,8 +183,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 10000;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 999999;
   display: none;
   align-items: center;
   justify-content: center;
@@ -184,9 +194,9 @@
 }
 
 .product-popup-overlay.active {
-  display: flex;
-  opacity: 1;
-  visibility: visible;
+  display: flex !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .product-popup {
@@ -194,13 +204,13 @@
   width: 311px;
   height: 447px;
   border-radius: 0;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.5);
   font-family: 'Jost', sans-serif;
   position: relative;
   transform: scale(0.8);
   transition: transform 0.3s ease;
   overflow: visible;
-  z-index: 1000;
+  z-index: 1000000;
 }
 
 .product-popup-overlay.active .product-popup {
@@ -338,10 +348,17 @@
   padding: 0 12px; 
   box-sizing: border-box;
   border-radius: 0;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 .size-selector__dropdown:hover {
   background: #f8f8f8;
+  border-color: #333;
+}
+.size-selector.open .size-selector__dropdown {
+  border-bottom-color: transparent;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background: #fafafa;
 }
 .size-selector__label { 
   font-family: 'Jost'; 
@@ -365,11 +382,11 @@
 .size-selector__arrow { 
   width: 0; 
   height: 0; 
-  border-left: 4px solid transparent; 
-  border-right: 4px solid transparent; 
-  border-top: 6px solid #000000; 
+  border-left: 5px solid transparent; 
+  border-right: 5px solid transparent; 
+  border-top: 7px solid #000000; 
   margin-left: 8px; 
-  transition: transform .2s; 
+  transition: transform 0.3s ease; 
 }
 .size-selector.open .size-selector__arrow { 
   transform: rotate(180deg); 
@@ -389,13 +406,26 @@
   z-index: 100;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 .size-selector.open .size-selector__list { 
   display: block; 
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .size-selector__item { 
   width: 100%; 
-  height: 36px; 
+  height: 40px; 
   background: #FFFFFF; 
   color: #000; 
   font-family: 'Jost'; 
@@ -409,20 +439,23 @@
   border: none; 
   cursor: pointer; 
   padding: 0;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 .size-selector__item:hover {
   background: #f5f5f5;
+  transform: translateX(2px);
 }
 .size-selector__item + .size-selector__item { 
-  border-top: 0.5px solid #000; 
+  border-top: 0.5px solid #eee; 
 }
 .size-selector__item.selected { 
   background: #000; 
   color: #FFF; 
+  font-weight: 500;
 }
 .size-selector__item.selected:hover { 
-  background: #000; 
+  background: #333; 
+  transform: none;
 }
 
 .variant-group__label {
@@ -635,21 +668,46 @@
   .quick-view-button {
     opacity: 1;
     visibility: visible;
-    width: 45px;
-    height: 45px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .quick-view-button svg {
+    width: 24px;
+    height: 24px;
   }
   
   .product-popup {
-    width: 98%;
+    width: 95%;
+    margin: 10px;
   }
   
   .product-popup__header,
   .product-popup__body {
-    padding: 20px;
+    padding: 15px;
   }
   
   .product-popup__title {
-    font-size: 22px;
+    font-size: 18px;
+    position: static;
+    margin: 10px 0;
+  }
+  
+  .product-popup__price {
+    position: static;
+    margin: 10px 0;
+  }
+  
+  .product-popup__image {
+    position: static;
+    width: 100%;
+    height: 200px;
+    margin-bottom: 15px;
+  }
+  
+  .size-selector {
+    position: static;
+    margin: 15px 0;
   }
   
   .variant-group__options {
@@ -659,6 +717,12 @@
   .variant-option {
     padding: 10px 15px;
     font-size: 13px;
+  }
+  
+  .product-popup__add-to-cart {
+    position: static;
+    width: 100%;
+    margin-top: 20px;
   }
 }
 </style>
@@ -753,29 +817,47 @@
 (function() {
   'use strict';
   
-  class ProductPopupManager {
-    constructor() {
-      this.overlay = document.getElementById('productPopupOverlay');
-      this.popup = this.overlay.querySelector('.product-popup');
-      this.loading = document.getElementById('popupLoading');
-      this.content = document.getElementById('popupContent');
-      this.closeBtn = this.overlay.querySelector('.product-popup__close');
-      this.addToCartBtn = this.overlay.querySelector('.product-popup__add-to-cart');
-      this.variantsContainer = document.getElementById('popupVariants');
-      // Added size dropdown refs
-      this.sizeSelector = this.overlay.querySelector('.size-selector');
-      this.sizeDropdown = this.sizeSelector.querySelector('.size-selector__dropdown');
-      this.sizeSelectedText = this.sizeSelector.querySelector('.size-selector__selected');
-      this.sizeList = this.sizeSelector.querySelector('.size-selector__list');
-      this.sizeOptionName = null;
-      this.sizeValues = [];
-      this.selectedSize = null;
-      
-      this.currentProduct = null;
-      this.selectedVariant = null;
-      this.winterJacketProduct = {{ section.settings.winter_jacket | json }};
-      
-      this.init();
+  class ProductPopupManager {    constructor() {
+      try {
+        this.overlay = document.getElementById('productPopupOverlay');
+        this.popup = this.overlay.querySelector('.product-popup');
+        this.loading = document.getElementById('popupLoading');
+        this.content = document.getElementById('popupContent');
+        this.closeBtn = this.overlay.querySelector('.product-popup__close');
+        this.addToCartBtn = this.overlay.querySelector('.product-popup__add-to-cart');
+        this.variantsContainer = document.getElementById('popupVariants');
+        
+        // Added size dropdown refs with error checking
+        this.sizeSelector = this.overlay.querySelector('.size-selector');
+        if (!this.sizeSelector) {
+          console.error('Size selector not found');
+          return;
+        }
+        
+        this.sizeDropdown = this.sizeSelector.querySelector('.size-selector__dropdown');
+        this.sizeSelectedText = this.sizeSelector.querySelector('.size-selector__selected');
+        this.sizeList = this.sizeSelector.querySelector('.size-selector__list');
+        
+        if (!this.sizeDropdown || !this.sizeSelectedText || !this.sizeList) {
+          console.error('Size dropdown elements not found:', {
+            dropdown: !!this.sizeDropdown,
+            selectedText: !!this.sizeSelectedText,
+            list: !!this.sizeList
+          });
+        }
+        
+        this.sizeOptionName = null;
+        this.sizeValues = [];
+        this.selectedSize = null;
+        
+        this.currentProduct = null;
+        this.selectedVariant = null;
+        this.winterJacketProduct = {{ section.settings.winter_jacket | json }};
+        
+        this.init();
+      } catch (error) {
+        console.error('Error initializing ProductPopupManager:', error);
+      }
     }
     
     init() {
@@ -783,8 +865,7 @@
       console.log('ProductPopupManager initialized');
     }
     
-    bindEvents() {
-      // Quick view button clicks
+    bindEvents() {      // Quick view button clicks
       document.addEventListener('click', (e) => {
         const quickViewBtn = e.target.closest('.quick-view-button');
         if (quickViewBtn) {
@@ -795,49 +876,81 @@
           if (productItem) {
             const productHandle = productItem.dataset.productHandle;
             console.log('Quick view clicked for:', productHandle);
+            
+            if (!productHandle) {
+              console.error('No product handle found on product item');
+              return;
+            }
+            
             this.openProductPopup(productHandle);
+          } else {
+            console.error('Product item not found');
           }
         }
       });
       
       // Close popup
-      this.closeBtn.addEventListener('click', () => this.closePopup());
+      if (this.closeBtn) {
+        this.closeBtn.addEventListener('click', () => this.closePopup());
+      }
       
       // Close on overlay click
-      this.overlay.addEventListener('click', (e) => {
-        if (e.target === this.overlay) {
-          this.closePopup();
-        }
-      });
+      if (this.overlay) {
+        this.overlay.addEventListener('click', (e) => {
+          if (e.target === this.overlay) {
+            this.closePopup();
+          }
+        });
+      }
       
       // Close on escape key
       document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && this.overlay.classList.contains('active')) {
+        if (e.key === 'Escape' && this.overlay && this.overlay.classList.contains('active')) {
           this.closePopup();
         }
       });
       
       // Add to cart
-      this.addToCartBtn.addEventListener('click', () => this.handleAddToCart());      // Size dropdown toggle
-      this.sizeDropdown.addEventListener('click', () => {
-        console.log('Size dropdown clicked');
-        this.toggleSizeDropdown();
-      });
+      if (this.addToCartBtn) {
+        this.addToCartBtn.addEventListener('click', () => this.handleAddToCart());
+      }
+      
+      // Size dropdown toggle
+      if (this.sizeDropdown) {
+        this.sizeDropdown.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('Size dropdown clicked');
+          this.toggleSizeDropdown();
+        });
+      }
+      
       // Close size list when clicking outside
       document.addEventListener('click', (e) => {
-        if (!this.sizeSelector.contains(e.target) && this.sizeSelector.classList.contains('open')) {
+        if (this.sizeSelector && !this.sizeSelector.contains(e.target) && this.sizeSelector.classList.contains('open')) {
           this.closeSizeDropdown();
         }
-      });    }
-    
-    async openProductPopup(productHandle) {
+      });}
+      async openProductPopup(productHandle) {
+      console.log('=== OPENING POPUP ===');
+      console.log('Product handle:', productHandle);
+      console.log('Overlay element:', this.overlay);
+      console.log('Loading element:', this.loading);
+      console.log('Content element:', this.content);
+      
       if (!productHandle) {
         console.error('No product handle provided');
         return;
       }
       
+      if (!this.overlay) {
+        console.error('Overlay element not found');
+        return;
+      }
+      
       this.showLoading();
       this.overlay.classList.add('active');
+      console.log('Popup overlay activated, classes:', this.overlay.classList.toString());
       
       try {
         console.log('Fetching product:', productHandle);
@@ -848,7 +961,8 @@
         }
         
         const product = await response.json();
-        console.log('Product fetched:', product);
+        console.log('Product fetched successfully:', product.title);
+        console.log('Product variants:', product.variants.length);
         
         this.currentProduct = product;
         this.selectedVariant = product.variants[0];
@@ -862,7 +976,7 @@
         this.closePopup();
         alert('Sorry, there was an error loading the product. Please try again.');
       }
-    }      renderProduct(product) {
+    }renderProduct(product) {
       // Set product info
       this.content.querySelector('.product-popup__title').textContent = product.title;
       
@@ -874,23 +988,54 @@
       
       // Hide description to match Figma design
       const description = this.content.querySelector('.product-popup__description');
-      description.style.display = 'none';// Set product image
+      description.style.display = 'none';      // Set product image with better error handling
       const imageContainer = this.content.querySelector('.product-popup__image');
+      console.log('=== IMAGE DEBUG ===');
       console.log('Product object:', product);
       console.log('Featured image:', product.featured_image);
       console.log('All images:', product.images);
       
+      // Clear any existing content
+      imageContainer.innerHTML = '';
+      imageContainer.style.backgroundImage = '';
+      imageContainer.style.backgroundColor = '';
+      
+      let imageUrl = null;
       if (product.featured_image) {
-        console.log('Setting featured image:', product.featured_image);
-        imageContainer.style.backgroundImage = `url("${product.featured_image}")`;
+        imageUrl = product.featured_image;
+        console.log('Using featured image:', imageUrl);
       } else if (product.images && product.images.length > 0) {
-        console.log('Setting first image:', product.images[0]);
-        imageContainer.style.backgroundImage = `url("${product.images[0]}")`;
+        imageUrl = product.images[0];
+        console.log('Using first image:', imageUrl);
+      }
+      
+      if (imageUrl) {
+        // Create an actual img element instead of using background-image
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.alt = product.title || 'Product image';
+        img.style.cssText = `
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          border-radius: 8px;
+        `;
+        
+        // Add error handling for image loading
+        img.onerror = function() {
+          console.log('Image failed to load:', imageUrl);
+          imageContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f5f5f5; color: #999; font-size: 14px; border-radius: 8px;">Image not available</div>';
+        };
+        
+        img.onload = function() {
+          console.log('Image loaded successfully:', imageUrl);
+        };
+        
+        imageContainer.appendChild(img);
+        console.log('Image element created and added to container');
       } else {
-        console.log('No images found for product');
-        // Set a placeholder or hide image container
-        imageContainer.style.backgroundImage = '';
-        imageContainer.style.backgroundColor = '#f5f5f5';
+        console.log('No images found, using placeholder');
+        imageContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f5f5f5; color: #999; font-size: 14px; border-radius: 8px;">No Image Available</div>';
       }
       
       // Render variants
@@ -1045,7 +1190,7 @@
         this.selectedSize = this.sizeValues[0];
       }
       this.updateSelectedVariant();
-    }toggleSizeDropdown() {
+    }    toggleSizeDropdown() {
       console.log('Toggle size dropdown, currently open:', this.sizeSelector.classList.contains('open'));
       if (this.sizeSelector.classList.contains('open')) {
         this.closeSizeDropdown();
@@ -1053,6 +1198,17 @@
         console.log('Opening size dropdown, size values:', this.sizeValues);
         this.sizeSelector.classList.add('open');
         this.sizeList.style.display = 'block';
+        
+        // Add click outside to close functionality
+        setTimeout(() => {
+          document.addEventListener('click', this.handleClickOutside.bind(this), { once: true });
+        }, 100);
+      }
+    }
+
+    handleClickOutside(event) {
+      if (!this.sizeSelector.contains(event.target)) {
+        this.closeSizeDropdown();
       }
     }closeSizeDropdown() {
       this.sizeSelector.classList.remove('open');
