@@ -730,10 +730,27 @@
 <div class="product-grid">
   <h2 class="product-grid__title">{{ section.settings.title }}</h2>
   
+  <!-- Debug Test Button -->
+  <div style="text-align: center; margin: 20px 0;">
+    <button id="testPopupBtn" style="background: #ff4444; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer;">
+      Test Popup (Debug)
+    </button>
+  </div>
+  
   <div class="product-grid__items">
     {% for block in section.blocks %}
       {% if block.settings.product != blank %}
         {% assign product = all_products[block.settings.product] %}
+        
+        <!-- Debug: Show product info -->
+        <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; font-size: 12px;">
+          <strong>Debug Info:</strong><br>
+          Product Handle: {{ product.handle }}<br>
+          Product ID: {{ product.id }}<br>
+          Product Title: {{ product.title }}<br>
+          Has Image: {{ product.featured_image != blank }}
+        </div>
+        
         <div class="product-item" 
              data-product-id="{{ product.id }}" 
              data-product-handle="{{ product.handle }}"
@@ -769,6 +786,13 @@
               <path d="M12 5v14M5 12h14"/>
             </svg>
           </button>
+        </div>
+      {% else %}
+        <!-- Debug: Show empty block -->
+        <div style="background: #ffeeee; padding: 20px; margin: 10px 0; border: 1px dashed #ff0000;">
+          <strong>Empty Product Block</strong><br>
+          Block ID: {{ block.id }}<br>
+          No product selected for this block.
         </div>
       {% endif %}
     {% endfor %}
@@ -865,26 +889,44 @@
       console.log('ProductPopupManager initialized');
     }
     
-    bindEvents() {      // Quick view button clicks
+    bindEvents() {      // Test popup button (for debugging)
+      const testBtn = document.getElementById('testPopupBtn');
+      if (testBtn) {
+        testBtn.addEventListener('click', () => {
+          console.log('Test button clicked - opening test popup');
+          this.openTestPopup();
+        });
+      }
+      
+      // Quick view button clicks
       document.addEventListener('click', (e) => {
         const quickViewBtn = e.target.closest('.quick-view-button');
         if (quickViewBtn) {
           e.preventDefault();
           e.stopPropagation();
           
+          console.log('=== QUICK VIEW BUTTON CLICKED ===');
+          console.log('Button element:', quickViewBtn);
+          
           const productItem = quickViewBtn.closest('.product-item');
+          console.log('Product item found:', productItem);
+          
           if (productItem) {
             const productHandle = productItem.dataset.productHandle;
-            console.log('Quick view clicked for:', productHandle);
+            const productId = productItem.dataset.productId;
+            console.log('Product handle:', productHandle);
+            console.log('Product ID:', productId);
             
             if (!productHandle) {
               console.error('No product handle found on product item');
+              alert('Error: No product handle found. Check if products are properly configured.');
               return;
             }
             
             this.openProductPopup(productHandle);
           } else {
             console.error('Product item not found');
+            alert('Error: Could not find product item.');
           }
         }
       });
@@ -1366,6 +1408,23 @@
           this.sizeSelector.style.display = 'none';
         }
       }, 300);
+    }
+    
+    openTestPopup() {
+      console.log('Opening test popup...');
+      if (!this.overlay) {
+        console.error('Overlay not found!');
+        return;
+      }
+      
+      // Show test content
+      this.content.querySelector('.product-popup__title').textContent = 'Test Product';
+      this.content.querySelector('.product-popup__price').textContent = '$99.99';
+      this.content.querySelector('.product-popup__image').innerHTML = '<div style="width: 100%; height: 100%; background: #4CAF50; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">TEST IMAGE</div>';
+      
+      this.hideLoading();
+      this.overlay.classList.add('active');
+      console.log('Test popup should now be visible');
     }
   }
   
